@@ -1,45 +1,200 @@
+# ======= SMART DEPENDENCY CHECK =======
+required_modules = [
+    ('feedparser', 'feedparser'),
+    ('requests', 'requests'),
+    ('bs4', 'beautifulsoup4'),
+    ('dateutil', 'python-dateutil')
+]
+
+missing_modules = []
+
+for module_name, install_name in required_modules:
+    try:
+        __import__(module_name)
+    except ImportError:
+        missing_modules.append((module_name, install_name))
+
+if missing_modules:
+    print("❗ Εντοπίστηκαν ελλείποντα modules:")
+    for module, install in missing_modules:
+        print(f"- {module} (Εγκατάσταση: pip install {install})")
+    print("\n⚠️ Παρακαλώ εγκατέστησε τα παραπάνω και ξανατρέξε το script.")
+    exit(1)
+
+# ======= END SMART CHECK =======
+
+import feedparser
+import datetime
+import os
+import requests
+from bs4 import BeautifulSoup
+from dateutil import parser as date_parser
+
+# Ρυθμίσεις
+WHATSAPP_PHONE = '+306932377969'
+CALLMEBOT_API_KEY = '7338852'
+NEWS_DIR = 'C:/Users/boikos.y.CALLCENTER/Morning Brief/'
+
+# Geopolitics Image (τοπικό αρχείο)
+GEOPOLITICS_IMAGE = 'geopolitics_image.png'
+
+# Section YouTube με απλά hyperlinks
+def fetch_youtube_links_sections():
+    section = "<h2>📺 YouTube Latest Videos</h2><ul>"
+    section += "<li><a href='https://www.youtube.com/@LAMBROSKALARRYTIS/videos' target='_blank'>Lambros Kalarritis</a></li>"
+    section += "<li><a href='https://www.youtube.com/@geostratigiki/videos' target='_blank'>Geostratigiki</a></li>"
+    section += "<li><a href='https://www.youtube.com/@Enimerosi.kai.Skepsi/videos' target='_blank'>Enimerosi kai Skepsi</a></li>"
+    section += "</ul>"
+    return section
+
+def fetch_sports_youtube_links():
+    section = "<h2>⚽ Sports YouTube Channels</h2><ul>"
+    section += "<li><a href='https://www.youtube.com/@sporfm946/videos' target='_blank'>SporFM 94.6</a></li>"
+    section += "<li><a href='https://www.youtube.com/@REDSPORTS7/videos' target='_blank'>RedSports 7</a></li>"
+    section += "</ul>"
+    return section
+
+# Bankingnews Section (μόνο hyperlink + εικόνα)
+def fetch_bankingnews_section():
+    return """
+    <h2>📰 Top Market Summary</h2>
+    <img src='https://www.bankingnews.gr/templates/banking/images/logo.png' alt='Bankingnews'>
+    <p><a href='https://www.bankingnews.gr' target='_blank'>Δείτε τα τελευταία δεδομένα εδώ</a></p>
+    """
+
+# Shipping Indexes Section (μόνο hyperlink + εικόνα)
+def fetch_shipping_indexes_section():
+    return """
+    <h2>🚢 Shipping Indexes Daily Values</h2>
+    <img src='https://seecapitalmarkets.com/wp-content/uploads/2023/02/logo-see-capital-markets.png' alt='Shipping Indexes'>
+    <p><a href='https://www.seecapitalmarkets.com/ShippingIndexes' target='_blank'>Δείτε τον πίνακα Shipping Indexes εδώ</a></p>
+    """
+
+# FX Section με 2 hyperlinks + εικόνα
+def fetch_fx_section():
+    return """
+    <h2>💱 FX & Commodities</h2>
+    <img src='https://seecapitalmarkets.com/wp-content/uploads/2023/02/logo-see-capital-markets.png' alt='Forex'>
+    <ul>
+        <li><a href='https://www.seecapitalmarkets.com/Forex' target='_blank'>Forex Markets</a></li>
+        <li><a href='https://www.seecapitalmarkets.com/Commodities' target='_blank'>Commodities Markets</a></li>
+    </ul>
+    """
+# RSS Κατηγορίες και feeds
+KEYWORDS = {
+    'Geopolitics': ['Ελληνοτουρκ', 'Geopolitics', 'Geo-politics', 'διεθνείς σχέσεις', 'Foreign Affairs', 'ΝΑΤΟ', 'War'],
+    'Markets': ['S&P500', 'Dow Jones', 'NASDAQ', 'FTSE', 'ASE', 'Χρηματιστήριο'],
+    'Energy': ['Brent', 'Crude Oil', 'Energy', 'BIFFEX', 'Shipping Index', 'Baltic'],
+    'Sports': ['Ολυμπιακός', 'Olympiakos', 'Ποδόσφαιρο']
+}
+
+FEEDS = [
+    'https://www.politico.eu/feed/',
+    'https://www.reuters.com/tools/rss',
+    'https://www.thestreet.com/feeds/rss/articles',
+    'https://www.lemonde.fr/en/rss/une.xml',
+    'https://www.economist.com/rss',
+    'https://www.rednews.gr/feed/',
+    'https://www.foreignaffairs.com/rss.xml',
+    'https://www.defence-point.gr/news/',
+    'https://flight.com.gr/',
+    'https://elisme.gr/',
+    'https://nordicmonitor.com/'
+]
+
+def is_recent(entry):
+    try:
+        published = date_parser.parse(entry.get('published', ''))
+        return (datetime.datetime.now(datetime.timezone.utc) - published).total_seconds() <= 86400
+    except:
+        return False
+
+def fetch_news():
+    categorized_news = {key: [] for key in KEYWORDS.keys()}
+    for url in FEEDS:
+        try:
+            feed = feedparser.parse(url)
+            for entry in feed.entries:
+                if not is_recent(entry):
+                    continue
+                for category, words in KEYWORDS.items():
+                    if any(word.lower() in (entry.title + entry.get('description', '')).lower() for word in words):
+                        image_url = ''
+                        if 'media_content' in entry:
+                            image_url = entry.media_content[0]['url']
+                        elif 'enclosure' in entry and 'url' in entry.enclosure:
+                            image_url = entry.enclosure['url']
+                        categorized_news[category].append({
+                            'title': entry.title,
+                            'link': entry.link,
+                            'published': entry.get('published', ''),
+                            'image': image_url
+                        })
+        except Exception as e:
+            print(f"Σφάλμα feed {url}: {e}")
+    return categorized_news
+
+# Δημιουργία τελικού report
+today = datetime.datetime.now().strftime('%Y-%m-%d')
+html_file = f'{NEWS_DIR}daily_news_{today}.html'
+news_data = fetch_news()
+
+html_content = f"""
 <!DOCTYPE html>
 <html lang="el">
 <head>
     <meta charset="UTF-8">
-    <title>Ημερήσιο Δελτίο</title>
-    <meta http-equiv="refresh" content="86400"> <!-- Προαιρετικό: ανανέωση σελίδας κάθε 24 ώρες -->
+    <title>Ημερήσιο Δελτίο - {today}</title>
     <style>
-        body { font-family: Georgia, 'Times New Roman', Times, serif; background: #f1f1f1; color: #333; margin: 0; padding: 0; }
-        .container { max-width: 1200px; margin: auto; background: #fff; padding: 20px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
-        header { text-align: center; border-bottom: 4px solid #222; margin-bottom: 20px; }
-        header h1 { margin: 0; font-size: 2.5em; }
-        h2 { border-bottom: 2px solid #999; padding-bottom: 5px; }
-        .section { margin-bottom: 40px; }
-        footer { text-align: center; font-size: 0.8em; color: #888; margin-top: 40px; }
+        body {{ font-family: Georgia, 'Times New Roman', Times, serif; background: #f1f1f1; color: #333; margin: 0; padding: 0; }}
+        .container {{ max-width: 1200px; margin: auto; background: #fff; padding: 20px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }}
+        header {{ text-align: center; border-bottom: 4px solid #222; margin-bottom: 20px; }}
+        header h1 {{ margin: 0; font-size: 2.5em; }}
+        .section {{ margin-bottom: 40px; }}
+        h2 {{ border-bottom: 2px solid #999; padding-bottom: 5px; }}
+        .news-grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }}
+        .news-item img {{ max-width: 100%; height: auto; border-radius: 5px; }}
+        footer {{ text-align: center; font-size: 0.8em; color: #888; margin-top: 40px; }}
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Ημερήσιο Δελτίο</h1>
+            <h1>Ημερήσιο Δελτίο - {today}</h1>
         </header>
+"""
 
-        <h2>Περιεχόμενο</h2>
-        <p><strong>Τελευταία αυτόματη ενημέρωση από GitHub Actions:</strong> <span id="staticUpdate"></span></p>
-        <p><strong>Τοπική ώρα συσκευής σας:</strong> <span id="liveUpdate"></span></p>
+html_content += fetch_bankingnews_section()
+html_content += fetch_shipping_indexes_section()
+html_content += fetch_fx_section()
+html_content += fetch_youtube_links_sections()
 
-        <script>
-            // Εμφάνιση της τελευταίας εκτέλεσης που έχει εισαχθεί στο HTML μέσω του workflow
-            document.getElementById('staticUpdate').innerText = new Date(document.lastModified).toLocaleString('el-GR', { timeZone: 'Europe/Athens' });
-            
-            // Εμφάνιση της τρέχουσας ώρας κάθε φορά που επισκέπτεται ο χρήστης (client-side)
-            function updateLocalTime() {
-                document.getElementById('liveUpdate').innerText = new Date().toLocaleString('el-GR', { timeZone: 'Europe/Athens' });
-            }
-            updateLocalTime();
-            setInterval(updateLocalTime, 1000);
-        </script>
+# Κατηγοριοποιημένα άρθρα
+for category, articles in news_data.items():
+    if articles:
+        html_content += f"<h2>{category}</h2>"
+        if category == 'Geopolitics':
+            html_content += f"<img src='{GEOPOLITICS_IMAGE}' alt='Geopolitics Image'>"
+        if category == 'Sports':
+            html_content += fetch_sports_youtube_links()
+        html_content += "<div class='news-grid'>"
+        for art in articles:
+            img_tag = f"<img src='{art['image']}' alt=''>" if art['image'] else ''
+            html_content += f"""
+            <div class='news-item'>
+                {img_tag}
+                <h3><a href="{art['link']}" target="_blank">{art['title']}</a></h3>
+                <small>{art['published']}</small>
+            </div>
+            """
+        html_content += "</div>"
 
-        <footer>
-            Αναφορά ενημερώνεται αυτόματα μέσω GitHub Actions καθημερινά στις 06:55 Ελλάδας + κάθε φορά που επισκέπτεστε τη σελίδα.
-        </footer>
+html_content += """
+    <footer>Αναφορά δημιουργήθηκε αυτόματα (V3 PRO).</footer>
     </div>
 </body>
 </html>
+"""
 
+with open(html_file, 'w', encoding='utf-8') as f:
+    f.write(html_content)
