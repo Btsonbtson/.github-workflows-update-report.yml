@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Ημερήσιο Δελτίο</title>
+    <meta http-equiv="refresh" content="86400"> <!-- Προαιρετικό: ανανέωση σελίδας κάθε 24 ώρες -->
     <style>
         body { font-family: Georgia, 'Times New Roman', Times, serif; background: #f1f1f1; color: #333; margin: 0; padding: 0; }
         .container { max-width: 1200px; margin: auto; background: #fff; padding: 20px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
@@ -20,15 +21,25 @@
         </header>
 
         <h2>Περιεχόμενο</h2>
-        <p>Τελευταία ενημέρωση: <span id="lastUpdate"></span></p>
+        <p><strong>Τελευταία αυτόματη ενημέρωση από GitHub Actions:</strong> <span id="staticUpdate"></span></p>
+        <p><strong>Τοπική ώρα συσκευής σας:</strong> <span id="liveUpdate"></span></p>
 
         <script>
-            document.getElementById('lastUpdate').innerText = new Date().toLocaleString('el-GR', { timeZone: 'Europe/Athens' });
+            // Εμφάνιση της τελευταίας εκτέλεσης που έχει εισαχθεί στο HTML μέσω του workflow
+            document.getElementById('staticUpdate').innerText = new Date(document.lastModified).toLocaleString('el-GR', { timeZone: 'Europe/Athens' });
+            
+            // Εμφάνιση της τρέχουσας ώρας κάθε φορά που επισκέπτεται ο χρήστης (client-side)
+            function updateLocalTime() {
+                document.getElementById('liveUpdate').innerText = new Date().toLocaleString('el-GR', { timeZone: 'Europe/Athens' });
+            }
+            updateLocalTime();
+            setInterval(updateLocalTime, 1000);
         </script>
 
         <footer>
-            Αναφορά ενημερώνεται αυτόματα μέσω GitHub Actions καθημερινά στις 06:55 Ελλάδας.
+            Αναφορά ενημερώνεται αυτόματα μέσω GitHub Actions καθημερινά στις 06:55 Ελλάδας + κάθε φορά που επισκέπτεστε τη σελίδα.
         </footer>
     </div>
 </body>
 </html>
+
