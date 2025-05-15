@@ -1,30 +1,33 @@
-name: Update Daily News Report PRO
+name: PRO Daily Report Update (05:55 Greece)
 
 on:
   schedule:
-    - cron: '55 2 * * *'  # 05:55 Ελλάδας (UTC+3)
-  workflow_dispatch:
+    - cron: '55 2 * * *'  # 05:55 Greece (UTC+3 = UTC 02:55)
+  workflow_dispatch:  # Για χειροκίνητο trigger
 
 jobs:
-  update:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: '3.x'
 
-      - name: Run the PRO Report Generator
-        run: python daily_news_agent_v3_PRO.py
+      - name: Install dependencies
+        run: pip install feedparser beautifulsoup4 requests
 
-      - name: Commit & Push updated report
+      - name: Run PRO Python script
+        run: python index.py
+
+      - name: Commit and push updated report
         run: |
-          git config --global user.name 'Btsonbtson-BOT'
-          git config --global user.email 'Btsonbtson@users.noreply.github.com'
+          git config user.name "Btsonbtson"
+          git config user.email "actions@github.com"
           git add index.html
-          git commit -m "Auto-updated report at $(TZ='Europe/Athens' date '+%Y-%m-%d %H:%M')"
+          git commit -m "Auto update daily report at 05:55 Greece"
           git push

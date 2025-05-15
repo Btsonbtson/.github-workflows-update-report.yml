@@ -1,15 +1,15 @@
-name: Send WhatsApp Reminder PRO
+name: PRO WhatsApp Reminder
 
 on:
   schedule:
-    - cron: '0 4 * * *'  # 07:00 Ελλάδας (UTC+3)
-  workflow_dispatch:
+    - cron: '00 4 * * *'  # 07:00 Greece (UTC+3 = UTC 04:00)
+  workflow_dispatch:  # Για χειροκίνητο trigger
 
 jobs:
-  whatsapp:
+  send:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Send WhatsApp Reminder via CallMeBot
+      - name: Send WhatsApp Message via CallMeBot
         run: |
-          curl --location --request GET 'https://api.callmebot.com/whatsapp.php?phone=+306932377969&text=Καλημέρα! Η αναφορά σας είναι έτοιμη: https://btsonbtson.github.io/NewsBrief/&apikey=2318162'
+          curl "https://api.callmebot.com/whatsapp.php?phone=+306932377969&text=Καλημέρα!+Η+ημερήσια+ενημέρωση+σου+είναι+έτοιμη:+https://btsonbtson.github.io/NewsBrief/&apikey=2318162"
