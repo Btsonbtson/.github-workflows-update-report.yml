@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ημερήσια Εφημερίδα</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Georgia', serif; background-color: #f4f1ee; }
+        .newspaper { columns: 2; column-gap: 2rem; }
+        .headline { font-size: 3rem; line-height: 1.2; font-weight: bold; }
+        .section-title { border-bottom: 3px solid #333; margin-bottom: 1rem; padding-bottom: 0.5rem; }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Hero Section -->
+    <header class="relative bg-gray-900 text-white text-center py-12">
+        <h1 class="headline">Ημερήσιο Δελτίο</h1>
+        <p id="date" class="text-xl mt-4"></p>
+    </header>
+
+    <main class="max-w-6xl mx-auto py-12 px-4 newspaper">
+
+        <!-- Geopolitics -->
+        <section>
+            <h2 class="section-title text-2xl">Geopolitics</h2>
+            <img src="https://nordicmonitor.com/wp-content/uploads/2023/04/nordicmonitor-300x200.jpg" alt="Geopolitics Image" class="mb-4 rounded-lg shadow">
+            <ul class="list-disc list-inside">
+                <li><a href="https://www.defence-point.gr/news/" target="_blank" class="text-blue-700">Defence Point</a></li>
+                <li><a href="https://nordicmonitor.com/" target="_blank" class="text-blue-700">Nordic Monitor</a></li>
+            </ul>
+        </section>
+
+        <!-- Markets -->
+        <section>
+            <h2 class="section-title text-2xl">Markets Summary</h2>
+            <img src="https://www.bankingnews.gr/media/k2/items/cache/29a6e0f43cb760e46b6e0576cb3f96a8_XL.jpg" alt="Markets" class="mb-4 rounded-lg shadow">
+            <a href="https://www.bankingnews.gr/" target="_blank" class="text-blue-700">Bankingnews.gr - Δείτε την πλήρη εικόνα αγοράς</a>
+        </section>
+
+        <!-- Shipping -->
+        <section>
+            <h2 class="section-title text-2xl">Shipping Indexes</h2>
+            <img src="https://www.seecapitalmarkets.com/images/Shipping_Index_Chart.png" alt="Shipping Index" class="mb-4 rounded-lg shadow">
+            <a href="https://www.seecapitalmarkets.com/ShippingIndexes" target="_blank" class="text-blue-700">Δείτε τον πίνακα Shipping Indexes</a>
+        </section>
+
+        <!-- Sports -->
+        <section>
+            <h2 class="section-title text-2xl">Sports</h2>
+            <img src="https://rednews.gr/wp-content/uploads/2024/03/olympiakos-goal.jpg" alt="Ολυμπιακός" class="mb-4 rounded-lg shadow">
+            <ul class="list-disc list-inside">
+                <li><a href="https://www.youtube.com/@sporfm946/videos" target="_blank" class="text-blue-700">SporFM 94.6 - Ολυμπιακός Videos</a></li>
+                <li><a href="https://www.youtube.com/@REDSPORTS7/videos" target="_blank" class="text-blue-700">Red Sports 7</a></li>
+            </ul>
+        </section>
+
+        <!-- YouTube -->
+        <section>
+            <h2 class="section-title text-2xl">YouTube Latest Videos</h2>
+            <ul class="list-disc list-inside">
+                <li><a href="https://www.youtube.com/@LAMBROSKALARRYTIS/videos" target="_blank" class="text-blue-700">Lambros Kalarritis</a></li>
+                <li><a href="https://www.youtube.com/@geostratigiki/videos" target="_blank" class="text-blue-700">Geostratigiki</a></li>
+                <li><a href="https://www.youtube.com/@Enimerosi.kai.Skepsi/videos" target="_blank" class="text-blue-700">Enimerosi kai Skepsi</a></li>
+            </ul>
+        </section>
+
+    </main>
+
+    <footer class="text-center text-sm text-gray-600 py-4">
+        Ανανεώνεται αυτόματα κάθε πρωί 05:55 Ελλάδας μέσω GitHub Actions.
+    </footer>
+
+    <script>
+        document.getElementById('date').innerText = new Date().toLocaleDateString('el-GR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    </script>
+
+</body>
+</html>
