@@ -1,199 +1,107 @@
-# ======= SMART DEPENDENCY CHECK =======
-required_modules = [
-    ('feedparser', 'feedparser'),
-    ('requests', 'requests'),
-    ('bs4', 'beautifulsoup4'),
-    ('dateutil', 'python-dateutil')
-]
-missing_modules = []
-
-for module_name, install_name in required_modules:
-    try:
-        __import__(module_name)
-    except ImportError:
-        missing_modules.append((module_name, install_name))
-
-if missing_modules:
-    print("❗ Εντοπίστηκαν ελλείποντα modules:")
-    for module, install in missing_modules:
-        print(f"- {module} (Εγκατάσταση: pip install {install})")
-    print("\n⚠️ Παρακαλώ εγκατέστησε τα παραπάνω και ξανατρέξε το script.")
-    exit(1)
-
-# ======= END SMART CHECK =======
-
-import feedparser
-import datetime
-import os
-import requests
-from bs4 import BeautifulSoup
-from dateutil import parser as date_parser
-
-# Ρυθμίσεις
-WHATSAPP_PHONE = '+306932377969'
-CALLMEBOT_API_KEY = '7338852'
-NEWS_DIR = 'C:/Users/boikos.y.CALLCENTER/Morning Brief/'
-
-# Geopolitics Image (τοπικό αρχείο)
-GEOPOLITICS_IMAGE = 'geopolitics_image.png'
-
-# Section YouTube με απλά hyperlinks
-def fetch_youtube_links_sections():
-    section = "<h2>📺 YouTube Latest Videos</h2><ul>"
-    section += "<li><a href='https://www.youtube.com/@LAMBROSKALARRYTIS/videos' target='_blank'>Lambros Kalarritis</a></li>"
-    section += "<li><a href='https://www.youtube.com/@geostratigiki/videos' target='_blank'>Geostratigiki</a></li>"
-    section += "<li><a href='https://www.youtube.com/@Enimerosi.kai.Skepsi/videos' target='_blank'>Enimerosi kai Skepsi</a></li>"
-    section += "</ul>"
-    return section
-
-def fetch_sports_youtube_links():
-    section = "<h2>⚽ Sports YouTube Channels</h2><ul>"
-    section += "<li><a href='https://www.youtube.com/@sporfm946/videos' target='_blank'>SporFM 94.6</a></li>"
-    section += "<li><a href='https://www.youtube.com/@REDSPORTS7/videos' target='_blank'>RedSports 7</a></li>"
-    section += "</ul>"
-    return section
-
-# Bankingnews Section (μόνο hyperlink + εικόνα)
-def fetch_bankingnews_section():
-    return """
-    <h2>📰 Top Market Summary</h2>
-    <img src='https://www.bankingnews.gr/templates/banking/images/logo.png' alt='Bankingnews'>
-    <p><a href='https://www.bankingnews.gr' target='_blank'>Δείτε τα τελευταία δεδομένα εδώ</a></p>
-    """
-
-# Shipping Indexes Section (μόνο hyperlink + εικόνα)
-def fetch_shipping_indexes_section():
-    return """
-    <h2>🚢 Shipping Indexes Daily Values</h2>
-    <img src='https://seecapitalmarkets.com/wp-content/uploads/2023/02/logo-see-capital-markets.png' alt='Shipping Indexes'>
-    <p><a href='https://www.seecapitalmarkets.com/ShippingIndexes' target='_blank'>Δείτε τον πίνακα Shipping Indexes εδώ</a></p>
-    """
-
-# FX Section με 2 hyperlinks + εικόνα
-def fetch_fx_section():
-    return """
-    <h2>💱 FX & Commodities</h2>
-    <img src='https://seecapitalmarkets.com/wp-content/uploads/2023/02/logo-see-capital-markets.png' alt='Forex'>
-    <ul>
-        <li><a href='https://www.seecapitalmarkets.com/Forex' target='_blank'>Forex Markets</a></li>
-        <li><a href='https://www.seecapitalmarkets.com/Commodities' target='_blank'>Commodities Markets</a></li>
-    </ul>
-    """
-# RSS Κατηγορίες και feeds
-KEYWORDS = {
-    'Geopolitics': ['Ελληνοτουρκ', 'Geopolitics', 'Geo-politics', 'διεθνείς σχέσεις', 'Foreign Affairs', 'ΝΑΤΟ', 'War'],
-    'Markets': ['S&P500', 'Dow Jones', 'NASDAQ', 'FTSE', 'ASE', 'Χρηματιστήριο'],
-    'Energy': ['Brent', 'Crude Oil', 'Energy', 'BIFFEX', 'Shipping Index', 'Baltic'],
-    'Sports': ['Ολυμπιακός', 'Olympiakos', 'Ποδόσφαιρο']
-}
-
-FEEDS = [
-    'https://www.politico.eu/feed/',
-    'https://www.reuters.com/tools/rss',
-    'https://www.thestreet.com/feeds/rss/articles',
-    'https://www.lemonde.fr/en/rss/une.xml',
-    'https://www.economist.com/rss',
-    'https://www.rednews.gr/feed/',
-    'https://www.foreignaffairs.com/rss.xml',
-    'https://www.defence-point.gr/news/',
-    'https://flight.com.gr/',
-    'https://elisme.gr/',
-    'https://nordicmonitor.com/'
-]
-
-def is_recent(entry):
-    try:
-        published = date_parser.parse(entry.get('published', ''))
-        return (datetime.datetime.now(datetime.timezone.utc) - published).total_seconds() <= 86400
-    except:
-        return False
-
-def fetch_news():
-    categorized_news = {key: [] for key in KEYWORDS.keys()}
-    for url in FEEDS:
-        try:
-            feed = feedparser.parse(url)
-            for entry in feed.entries:
-                if not is_recent(entry):
-                    continue
-                for category, words in KEYWORDS.items():
-                    if any(word.lower() in (entry.title + entry.get('description', '')).lower() for word in words):
-                        image_url = ''
-                        if 'media_content' in entry:
-                            image_url = entry.media_content[0]['url']
-                        elif 'enclosure' in entry and 'url' in entry.enclosure:
-                            image_url = entry.enclosure['url']
-                        categorized_news[category].append({
-                            'title': entry.title,
-                            'link': entry.link,
-                            'published': entry.get('published', ''),
-                            'image': image_url
-                        })
-        except Exception as e:
-            print(f"Σφάλμα feed {url}: {e}")
-    return categorized_news
-
-# Δημιουργία τελικού report
-today = datetime.datetime.now().strftime('%Y-%m-%d')
-html_file = f'{NEWS_DIR}daily_news_{today}.html'
-news_data = fetch_news()
-
-html_content = f"""
 <!DOCTYPE html>
 <html lang="el">
 <head>
     <meta charset="UTF-8">
-    <title>Ημερήσιο Δελτίο - {today}</title>
-    <style>
-        body {{ font-family: Georgia, 'Times New Roman', Times, serif; background: #f1f1f1; color: #333; margin: 0; padding: 0; }}
-        .container {{ max-width: 1200px; margin: auto; background: #fff; padding: 20px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }}
-        header {{ text-align: center; border-bottom: 4px solid #222; margin-bottom: 20px; }}
-        header h1 {{ margin: 0; font-size: 2.5em; }}
-        .section {{ margin-bottom: 40px; }}
-        h2 {{ border-bottom: 2px solid #999; padding-bottom: 5px; }}
-        .news-grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }}
-        .news-item img {{ max-width: 100%; height: auto; border-radius: 5px; }}
-        footer {{ text-align: center; font-size: 0.8em; color: #888; margin-top: 40px; }}
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ημερήσιο News Brief</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <div class="container">
-        <header>
-            <h1>Ημερήσιο Δελτίο - {today}</h1>
-        </header>
-"""
+<body class="bg-gray-100 font-sans">
 
-html_content += fetch_bankingnews_section()
-html_content += fetch_shipping_indexes_section()
-html_content += fetch_fx_section()
-html_content += fetch_youtube_links_sections()
+    <!-- Hero Section -->
+    <header class="relative bg-cover bg-center h-96" style="background-image: url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d');">
+        <div class="absolute inset-0 bg-black opacity-50"></div>
+        <div class="relative z-10 flex flex-col items-center justify-center h-full text-center text-white">
+            <h1 class="text-5xl font-bold mb-4">Ημερήσια Ενημέρωση</h1>
+            <p class="text-xl">Καλημέρα! Ημερομηνία: 14 Μαΐου 2025</p>
+        </div>
+    </header>
 
-# Κατηγοριοποιημένα άρθρα
-for category, articles in news_data.items():
-    if articles:
-        html_content += f"<h2>{category}</h2>"
-        if category == 'Geopolitics':
-            html_content += f"<img src='{GEOPOLITICS_IMAGE}' alt='Geopolitics Image'>"
-        if category == 'Sports':
-            html_content += fetch_sports_youtube_links()
-        html_content += "<div class='news-grid'>"
-        for art in articles:
-            img_tag = f"<img src='{art['image']}' alt=''>" if art['image'] else ''
-            html_content += f"""
-            <div class='news-item'>
-                {img_tag}
-                <h3><a href="{art['link']}" target="_blank">{art['title']}</a></h3>
-                <small>{art['published']}</small>
+    <!-- YouTube Latest Videos -->
+    <section class="max-w-6xl mx-auto py-12 px-4">
+        <h2 class="text-3xl font-bold mb-6 flex items-center"><span class="mr-3">📺</span>YouTube Latest Videos</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                <img src="https://img.youtube.com/vi/naoQ40CzmW8/hqdefault.jpg" alt="Video Thumbnail">
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg mb-2">Λάμπρος Καλαρρύτης</h3>
+                    <a href="https://youtu.be/naoQ40CzmW8" target="_blank" class="text-blue-600 hover:underline">Δείτε το βίντεο</a>
+                </div>
             </div>
-            """
-        html_content += "</div>"
+            <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                <img src="https://img.youtube.com/vi/kUgCkiGqLho/hqdefault.jpg" alt="Video Thumbnail">
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg mb-2">Geostratigiki</h3>
+                    <a href="https://youtu.be/kUgCkiGqLho" target="_blank" class="text-blue-600 hover:underline">Δείτε το βίντεο</a>
+                </div>
+            </div>
+            <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                <img src="https://img.youtube.com/vi/-t_nVMvpF8A/hqdefault.jpg" alt="Video Thumbnail">
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg mb-2">SporFM 94.6 (Ολυμπιακός)</h3>
+                    <a href="https://youtu.be/-t_nVMvpF8A" target="_blank" class="text-blue-600 hover:underline">Δείτε το βίντεο</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Sports Section -->
+    <section class="max-w-6xl mx-auto py-12 px-4">
+        <h2 class="text-3xl font-bold mb-6 flex items-center"><span class="mr-3">⚽</span>Sports YouTube Channels</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-white shadow-md rounded-lg p-6">
+                <h3 class="text-xl font-semibold mb-3">SporFM 94.6</h3>
+                <a href="https://www.youtube.com/@sporfm946/videos" target="_blank" class="text-blue-600 hover:underline">Δείτε όλα τα videos</a>
+            </div>
+            <div class="bg-white shadow-md rounded-lg p-6">
+                <h3 class="text-xl font-semibold mb-3">RedSports 7</h3>
+                <a href="https://www.youtube.com/@REDSPORTS7/videos" target="_blank" class="text-blue-600 hover:underline">Δείτε όλα τα videos</a>
+            </div>
+        </div>
+    </section>
 
-html_content += """
-    <footer>Αναφορά δημιουργήθηκε αυτόματα (V3 PRO).</footer>
-    </div>
+    <!-- Geopolitics Section -->
+    <section class="max-w-6xl mx-auto py-12 px-4 bg-white shadow-md rounded-lg">
+        <h2 class="text-3xl font-bold mb-6 flex items-center"><span class="mr-3">🌍</span>Geopolitics & International Relations</h2>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Political_World_Map.jpg/800px-Political_World_Map.jpg" alt="Geopolitics Map" class="w-full mb-6 rounded-lg">
+        <p class="text-lg">Διαβάστε τις τελευταίες γεωπολιτικές εξελίξεις μέσα από τις προτεινόμενες πηγές:</p>
+        <ul class="list-disc list-inside mt-4">
+            <li><a href="https://www.defence-point.gr/news/" target="_blank" class="text-blue-600 hover:underline">Defence Point</a></li>
+            <li><a href="https://elisme.gr/" target="_blank" class="text-blue-600 hover:underline">Elisme</a></li>
+            <li><a href="https://nordicmonitor.com/" target="_blank" class="text-blue-600 hover:underline">Nordic Monitor</a></li>
+            <li><a href="https://foreignaffairs.com/" target="_blank" class="text-blue-600 hover:underline">Foreign Affairs</a></li>
+        </ul>
+    </section>
+
+    <!-- Markets Section -->
+    <section class="max-w-6xl mx-auto py-12 px-4">
+        <h2 class="text-3xl font-bold mb-6 flex items-center"><span class="mr-3">📈</span>Top Market Summary</h2>
+        <a href="https://www.bankingnews.gr/" target="_blank" class="text-blue-600 hover:underline">Bankingnews.gr - Δείτε τα τελευταία δεδομένα εδώ</a>
+    </section>
+
+    <!-- Shipping Indexes Section -->
+    <section class="max-w-6xl mx-auto py-12 px-4 bg-white shadow-md rounded-lg">
+        <h2 class="text-3xl font-bold mb-6 flex items-center"><span class="mr-3">🚢</span>Shipping Indexes Daily Values</h2>
+        <a href="https://www.seecapitalmarkets.com/ShippingIndexes" target="_blank" class="text-blue-600 hover:underline">Δείτε τα τελευταία Shipping Indexes</a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="mt-16 bg-gray-900 text-white py-8 text-center">
+        <p>© 2025 Ημερήσια Αναφορά - Ανανεώθηκε στις 06:55 καθημερινά</p>
+    </footer>
+
 </body>
 </html>
-"""
 
-with open(html_file, 'w', encoding='utf-8') as f:
-    f.write(html_content)
+
+# WhatsApp Notification
+message = f"Καλημέρα! Η ημερήσια ενημέρωσή σου είναι έτοιμη:\nhttp://localhost:8000/daily_news_{today}.html"
+try:
+    url = f'https://api.callmebot.com/whatsapp.php?phone={WHATSAPP_PHONE}&text={requests.utils.quote(message)}&apikey={CALLMEBOT_API_KEY}'
+    response = requests.get(url)
+    if 'OK' in response.text:
+        print('WhatsApp μήνυμα στάλθηκε επιτυχώς.')
+    else:
+        print('WhatsApp αποτυχία:', response.text)
+except Exception as e:
+    print('WhatsApp σφάλμα:', e)
+
