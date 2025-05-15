@@ -1,14 +1,11 @@
-import datetime
+from datetime import datetime
 
-# -----------------
-# Daily News Agent v3 PRO for GitHub Pages
-# -----------------
+# Get today's date in Greek format
+today = datetime.now().strftime('%A %d %B %Y')
 
-# Get today's date formatted for Greek
-today = datetime.datetime.now().strftime('%A %d %B %Y')
-
-# Create the HTML content (pure static with placeholders)
-html_content = f"""<!DOCTYPE html>
+# Generate the HTML content
+html_content = f"""
+<!DOCTYPE html>
 <html lang="el">
 <head>
     <meta charset="UTF-8">
@@ -16,68 +13,71 @@ html_content = f"""<!DOCTYPE html>
     <title>Ημερήσια Ενημέρωση</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 font-serif text-gray-900">
-    <header class="bg-gray-800 text-white py-10 text-center">
-        <h1 class="text-4xl font-extrabold">Ημερήσιο Δελτίο</h1>
-        <p class="mt-2 text-xl">{today}</p>
+<body class="bg-gray-100 text-gray-900">
+
+    <!-- Header -->
+    <header class="bg-gray-900 text-white py-8 text-center">
+        <h1 class="text-4xl font-bold">Ημερήσια Αναφορά</h1>
+        <p class="mt-2 text-lg">{today} - Ανανεώνεται καθημερινά στις 05:55</p>
     </header>
 
-    <main class="max-w-7xl mx-auto py-10 px-4 grid grid-cols-1 lg:grid-cols-2 gap-8">
-
+    <main class="max-w-7xl mx-auto py-12 px-4 grid grid-cols-1 md:grid-cols-2 gap-8">
         <section>
-            <h2 class="text-3xl font-bold border-b-4 border-black mb-4">Geopolitics & International Relations</h2>
-            <img src="https://www.defence-point.gr/wp-content/uploads/2023/10/geopolitics.jpg" alt="Geopolitics" class="rounded-lg shadow mb-4">
-            <ul class="list-disc pl-5">
-                <li><a href="https://www.defence-point.gr/news/" class="text-blue-700 hover:underline">Defence Point</a></li>
-                <li><a href="https://nordicmonitor.com/" class="text-blue-700 hover:underline">Nordic Monitor</a></li>
+            <h2 class="text-3xl font-bold mb-6 flex items-center"><span class="mr-3">🌍</span>Geopolitics & International Relations</h2>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Political_World_Map.jpg/800px-Political_World_Map.jpg" alt="Geopolitics Map" class="w-full mb-6 rounded-lg">
+            <ul class="list-disc list-inside">
+                <li><a href="https://www.defence-point.gr/news/" target="_blank" class="text-blue-600 hover:underline">Defence Point</a></li>
+                <li><a href="https://elisme.gr/" target="_blank" class="text-blue-600 hover:underline">Elisme</a></li>
+                <li><a href="https://nordicmonitor.com/" target="_blank" class="text-blue-600 hover:underline">Nordic Monitor</a></li>
+                <li><a href="https://foreignaffairs.com/" target="_blank" class="text-blue-600 hover:underline">Foreign Affairs</a></li>
             </ul>
         </section>
 
         <section>
-            <h2 class="text-3xl font-bold border-b-4 border-black mb-4">Shipping Indexes</h2>
-            <img src="https://seecapitalmarkets.com/logo.png" alt="Shipping Index" class="rounded-lg shadow mb-4">
-            <a href="https://seecapitalmarkets.com/ShippingIndexes" class="text-blue-700 hover:underline">Δείτε τον πίνακα Shipping Indexes</a>
+            <h2 class="text-3xl font-bold mb-6 flex items-center"><span class="mr-3">📈</span>Markets Summary</h2>
+            <img src="https://www.bankingnews.gr/themes/bankingnews/images/logo.png" alt="Markets" class="w-full mb-6 rounded-lg">
+            <a href="https://www.bankingnews.gr/" target="_blank" class="text-blue-600 hover:underline">Bankingnews.gr - Πλήρης αγορά</a>
         </section>
 
         <section>
-            <h2 class="text-3xl font-bold border-b-4 border-black mb-4">Markets Summary</h2>
-            <img src="https://www.bankingnews.gr/themes/bankingnews/images/logo.png" alt="Markets" class="rounded-lg shadow mb-4">
-            <a href="https://www.bankingnews.gr/" class="text-blue-700 hover:underline">Bankingnews.gr - Πλήρης αγορά</a>
+            <h2 class="text-3xl font-bold mb-6 flex items-center"><span class="mr-3">🚢</span>Shipping Indexes</h2>
+            <img src="https://seecapitalmarkets.com/assets/logo.png" alt="Shipping Index" class="w-full mb-6 rounded-lg">
+            <a href="https://seecapitalmarkets.com/ShippingIndexes" target="_blank" class="text-blue-600 hover:underline">Δείτε τον πίνακα Shipping Indexes</a>
         </section>
 
         <section>
-            <h2 class="text-3xl font-bold border-b-4 border-black mb-4">Commodities</h2>
-            <img src="https://seecapitalmarkets.com/logo.png" alt="Commodities" class="rounded-lg shadow mb-4">
-            <a href="https://seecapitalmarkets.com/Commodities" class="text-blue-700 hover:underline">Δείτε τον πίνακα Commodities</a>
+            <h2 class="text-3xl font-bold mb-6 flex items-center"><span class="mr-3">💰</span>Commodities & Forex</h2>
+            <img src="https://seecapitalmarkets.com/assets/logo.png" alt="Commodities" class="w-full mb-6 rounded-lg">
+            <a href="https://www.seecapitalmarkets.com/Commodities" target="_blank" class="text-blue-600 hover:underline">Δείτε Commodities</a> |
+            <a href="https://www.seecapitalmarkets.com/Forex" target="_blank" class="text-blue-600 hover:underline">Δείτε Forex</a>
         </section>
 
         <section>
-            <h2 class="text-3xl font-bold border-b-4 border-black mb-4">Sports</h2>
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Olympiakos_Piraeus_logo.svg/1200px-Olympiakos_Piraeus_logo.svg.png" alt="Olympiacos" class="rounded-lg shadow mb-4">
-            <ul class="list-disc pl-5">
-                <li><a href="https://www.youtube.com/@sporfm946/videos" class="text-blue-700 hover:underline">SporFM 94.6 - Ολυμπιακός</a></li>
-                <li><a href="https://www.youtube.com/@REDSPORTS7/videos" class="text-blue-700 hover:underline">Red Sports 7</a></li>
+            <h2 class="text-3xl font-bold mb-6 flex items-center"><span class="mr-3">⚽</span>Sports</h2>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Olympiakos_Piraeus_logo.svg/1200px-Olympiakos_Piraeus_logo.svg.png" alt="Olympiacos" class="w-full mb-6 rounded-lg">
+            <ul class="list-disc list-inside">
+                <li><a href="https://www.youtube.com/@sporfm946/videos" target="_blank" class="text-blue-600 hover:underline">SporFM 94.6 - Ολυμπιακός</a></li>
+                <li><a href="https://www.youtube.com/@REDSPORTS7/videos" target="_blank" class="text-blue-600 hover:underline">Red Sports 7</a></li>
             </ul>
         </section>
 
         <section>
-            <h2 class="text-3xl font-bold border-b-4 border-black mb-4">YouTube Latest Videos</h2>
-            <ul class="list-disc pl-5">
-                <li><a href="https://www.youtube.com/@LAMBROSKALARRYTIS/videos" class="text-blue-700 hover:underline">Lambros Kalarritis</a></li>
-                <li><a href="https://www.youtube.com/@geostratigiki/videos" class="text-blue-700 hover:underline">Geostratigiki</a></li>
-                <li><a href="https://www.youtube.com/@Enimerosi.kai.Skepsi/videos" class="text-blue-700 hover:underline">Enimerosi kai Skepsi</a></li>
+            <h2 class="text-3xl font-bold mb-6 flex items-center"><span class="mr-3">📺</span>YouTube Latest Videos</h2>
+            <ul class="list-disc list-inside">
+                <li><a href="https://www.youtube.com/@LAMBROSKALARRYTIS/videos" target="_blank" class="text-blue-600 hover:underline">Lambros Kalarritis</a></li>
+                <li><a href="https://www.youtube.com/@geostratigiki/videos" target="_blank" class="text-blue-600 hover:underline">Geostratigiki</a></li>
+                <li><a href="https://www.youtube.com/@Enimerosi.kai.Skepsi/videos" target="_blank" class="text-blue-600 hover:underline">Enimerosi kai Skepsi</a></li>
             </ul>
         </section>
-
     </main>
 
-    <footer class="bg-gray-800 text-white text-center py-6 mt-10">
-        &copy; 2025 Ημερήσιο Δελτίο
+    <footer class="mt-16 bg-gray-900 text-white py-8 text-center">
+        <p>© 2025 Ημερήσια Αναφορά - Ανανεώνεται καθημερινά μέσω GitHub Actions</p>
     </footer>
 </body>
 </html>
 """
 
-# Save as index.html (overwrite)
+# Save as index.html
 with open("index.html", "w", encoding="utf-8") as f:
     f.write(html_content)
