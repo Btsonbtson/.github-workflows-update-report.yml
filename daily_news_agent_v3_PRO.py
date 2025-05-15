@@ -1,7 +1,8 @@
+
 import datetime
 import random
 
-# Λίστα με static εικόνες Ολυμπιακού (ποδόσφαιρο σχετικές)
+# Ολυμπιακός σχετικές εικόνες (θα επιλεγεί μία τυχαία)
 OLYMPIAKOS_IMAGES = [
     "https://upload.wikimedia.org/wikipedia/el/2/23/Olympiacos_FC_logo.svg",
     "https://www.olympiacos.org/wp-content/uploads/2020/10/fans-red-white.jpg",
@@ -9,10 +10,7 @@ OLYMPIAKOS_IMAGES = [
     "https://www.iefimerida.gr/sites/default/files/styles/in_article/public/2023-05/olympiakos-podosfairo.jpg"
 ]
 
-# Επιλογή τυχαίας εικόνας
-olympiakos_image = random.choice(OLYMPIAKOS_IMAGES)
-
-# Στατικές πηγές για Geopolitics RSS backup mode
+# Static Geopolitics sources
 GEOPOLITICS_SOURCES = [
     ("Politico Europe", "https://www.politico.eu/feed/"),
     ("Reuters", "https://www.reuters.com/tools/rss"),
@@ -20,13 +18,16 @@ GEOPOLITICS_SOURCES = [
     ("Le Monde", "https://www.lemonde.fr/en/rss"),
     ("The Economist", "https://www.economist.com/rss"),
     ("Rednews.gr", "https://www.rednews.gr/feed/"),
-    ("Foreign Affairs", "https://www.foreignaffairs.com/rss.xml"),
+    ("Foreign Affairs", "https://www.foreignaffairs.com/rss.xml")
 ]
 
-# Τρέχουσα ημερομηνία για εμφάνιση στο header
+# Επιλογή τυχαίας εικόνας Ολυμπιακού
+olympiakos_image = random.choice(OLYMPIAKOS_IMAGES)
+
+# Σημερινή ημερομηνία
 today = datetime.datetime.now().strftime('%A %d %B %Y')
 
-# Δημιουργία του HTML με Newspaper-style αισθητική
+# HTML content με Tailwind Newspaper-style
 html_content = f"""
 <!DOCTYPE html>
 <html lang="el">
@@ -36,7 +37,6 @@ html_content = f"""
     <title>Ημερήσιο Δελτίο</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        // Δυναμική εμφάνιση ώρας τελευταίου refresh με κάθε ανανέωση browser
         window.onload = function() {{
             document.getElementById('refresh-time').innerText = new Date().toLocaleTimeString('el-GR') + ' ' + new Date().toLocaleDateString('el-GR');
         }};
@@ -60,15 +60,15 @@ html_content = f"""
             <ul class="list-disc list-inside">
 """
 
-# Εισαγωγή των στατικών πηγών geopolitics
+# Προσθήκη στατικών πηγών Geopolitics
 for name, url in GEOPOLITICS_SOURCES:
     html_content += f'<li><a href="{url}" target="_blank" class="text-blue-600 hover:underline">{name}</a></li>\n'
 
-html_content += """
+html_content += f"""
             </ul>
         </section>
 
-        <!-- Sports Section with dynamic Olympiakos image -->
+        <!-- Sports Section with random Olympiacos image -->
         <section class="bg-white shadow-md rounded-lg p-6">
             <h2 class="text-3xl font-bold mb-6 flex items-center"><span class="mr-3">⚽</span>Sports - Ολυμπιακός</h2>
             <img src="{olympiakos_image}" alt="Olympiacos" class="w-full mb-6 rounded-lg">
@@ -93,7 +93,7 @@ html_content += """
             <h2 class="text-3xl font-bold mb-6 flex items-center"><span class="mr-3">📈</span>Top Market Summary</h2>
             <a href="https://www.bankingnews.gr/" target="_blank" class="text-blue-600 hover:underline">Bankingnews.gr - Δείτε τα τελευταία δεδομένα εδώ</a>
         </section>
-html_content += """
+
         <!-- Shipping Indexes Section -->
         <section class="bg-white shadow-md rounded-lg p-6">
             <h2 class="text-3xl font-bold mb-6 flex items-center"><span class="mr-3">🚢</span>Shipping Indexes Daily Values</h2>
@@ -109,7 +109,6 @@ html_content += """
 
     </main>
 
-    <!-- Footer -->
     <footer class="mt-16 bg-gray-900 text-white py-8 text-center">
         <p>© 2025 Ημερήσια Αναφορά - Ανανεώνεται καθημερινά μέσω GitHub Actions</p>
     </footer>
@@ -118,6 +117,6 @@ html_content += """
 </html>
 """
 
-# Αποθήκευση αρχείου index.html
+# Αποθήκευση του αρχείου
 with open("index.html", "w", encoding="utf-8") as f:
     f.write(html_content)
