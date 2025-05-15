@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <title>Ημερήσιο Δελτίο</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+    <header class="bg-black text-white text-center py-8">
+        <h1 class="text-4xl font-bold">Ημερήσιο Δελτίο</h1>
+        <p id="date" class="mt-2"></p>
+    </header>
+
+    <main class="max-w-7xl mx-auto p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <section>
+            <h2 class="text-2xl border-b-2 border-black mb-4">Geopolitics</h2>
+            <img src="https://www.defence-point.gr/wp-content/uploads/2023/12/map.jpg" alt="Geopolitics" class="mb-4 rounded-xl shadow">
+            <ul>
+                <li><a href="https://www.defence-point.gr/news/" class="text-blue-600">Defence Point</a></li>
+                <li><a href="https://nordicmonitor.com/" class="text-blue-600">Nordic Monitor</a></li>
+            </ul>
+        </section>
+
+        <section>
+            <h2 class="text-2xl border-b-2 border-black mb-4">Markets Summary</h2>
+            <img src="https://www.bankingnews.gr/images/bnlogo2023.png" alt="Markets" class="mb-4 rounded-xl shadow">
+            <a href="https://www.bankingnews.gr/" class="text-blue-600">Bankingnews.gr - Δείτε την πλήρη εικόνα αγοράς</a>
+        </section>
+
+        <section>
+            <h2 class="text-2xl border-b-2 border-black mb-4">Shipping Indexes</h2>
+            <img src="https://seecapitalmarkets.com/assets/logo.png" alt="Shipping Index" class="mb-4 rounded-xl shadow">
+            <a href="https://seecapitalmarkets.com/ShippingIndexes" class="text-blue-600">Δείτε τον πίνακα Shipping Indexes</a>
+        </section>
+
+        <section>
+            <h2 class="text-2xl border-b-2 border-black mb-4">Commodities</h2>
+            <img src="https://seecapitalmarkets.com/assets/logo.png" alt="Commodities" class="mb-4 rounded-xl shadow">
+            <a href="https://seecapitalmarkets.com/Commodities" class="text-blue-600">Δείτε τον πίνακα Commodities</a>
+        </section>
+
+        <section>
+            <h2 class="text-2xl border-b-2 border-black mb-4">Sports</h2>
+            <img src="https://www.sport-fm.gr/images/sportfm946.png" alt="Olympiacos" class="mb-4 rounded-xl shadow">
+            <ul>
+                <li><a href="https://www.youtube.com/@sporfm946/videos" class="text-blue-600">SporFM 94.6 - Ολυμπιακός Videos</a></li>
+                <li><a href="https://www.youtube.com/@REDSPORTS7/videos" class="text-blue-600">Red Sports 7</a></li>
+            </ul>
+        </section>
+
+        <section>
+            <h2 class="text-2xl border-b-2 border-black mb-4">YouTube Latest Videos</h2>
+            <ul>
+                <li><a href="https://www.youtube.com/@LAMBROSKALARRYTIS/videos" class="text-blue-600">Lambros Kalarritis</a></li>
+                <li><a href="https://www.youtube.com/@geostratigiki/videos" class="text-blue-600">Geostratigiki</a></li>
+                <li><a href="https://www.youtube.com/@Enimerosi.kai.Skepsi/videos" class="text-blue-600">Enimerosi kai Skepsi</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer class="text-center py-4 text-sm">
+        © 2025 Ημερήσιο Δελτίο. Powered by Btsonbtson.
+    </footer>
+
+    <script>
+        document.getElementById('date').textContent = new Date().toLocaleDateString('el-GR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    </script>
+</body>
+</html>
