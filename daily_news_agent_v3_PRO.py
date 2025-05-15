@@ -1,8 +1,7 @@
-
 import datetime
 import random
 
-# Ολυμπιακός σχετικές εικόνες (θα επιλεγεί μία τυχαία)
+# Curated Olympiacos images
 OLYMPIAKOS_IMAGES = [
     "https://upload.wikimedia.org/wikipedia/el/2/23/Olympiacos_FC_logo.svg",
     "https://www.olympiacos.org/wp-content/uploads/2020/10/fans-red-white.jpg",
@@ -21,13 +20,13 @@ GEOPOLITICS_SOURCES = [
     ("Foreign Affairs", "https://www.foreignaffairs.com/rss.xml")
 ]
 
-# Επιλογή τυχαίας εικόνας Ολυμπιακού
+# Select a random Olympiacos image
 olympiakos_image = random.choice(OLYMPIAKOS_IMAGES)
 
-# Σημερινή ημερομηνία
+# Today's date (for display only, browser refresh will show dynamic)
 today = datetime.datetime.now().strftime('%A %d %B %Y')
 
-# HTML content με Tailwind Newspaper-style
+# Generate HTML content
 html_content = f"""
 <!DOCTYPE html>
 <html lang="el">
@@ -37,9 +36,13 @@ html_content = f"""
     <title>Ημερήσιο Δελτίο</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        window.onload = function() {{
-            document.getElementById('refresh-time').innerText = new Date().toLocaleTimeString('el-GR') + ' ' + new Date().toLocaleDateString('el-GR');
-        }};
+        function updateRefreshTime() {{
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('el-GR');
+            const dateString = now.toLocaleDateString('el-GR');
+            document.getElementById('refresh-time').textContent = timeString + ' ' + dateString;
+        }}
+        window.onload = updateRefreshTime;
     </script>
 </head>
 <body class="bg-gray-100 text-gray-900">
@@ -60,7 +63,7 @@ html_content = f"""
             <ul class="list-disc list-inside">
 """
 
-# Προσθήκη στατικών πηγών Geopolitics
+# Add static Geopolitics links
 for name, url in GEOPOLITICS_SOURCES:
     html_content += f'<li><a href="{url}" target="_blank" class="text-blue-600 hover:underline">{name}</a></li>\n'
 
@@ -117,6 +120,6 @@ html_content += f"""
 </html>
 """
 
-# Αποθήκευση του αρχείου
+# Save the HTML file
 with open("index.html", "w", encoding="utf-8") as f:
     f.write(html_content)
