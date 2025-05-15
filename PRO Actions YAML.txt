@@ -1,0 +1,36 @@
+name: Update Daily Report PRO
+
+on:
+  schedule:
+    # Εκτέλεση κάθε μέρα στις 05:55 Ελλάδας (UTC+3 => 02:55 UTC)
+    - cron: '55 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install Dependencies (if any)
+        run: |
+          pip install --upgrade pip
+
+      - name: Run Report Generator Script
+        run: |
+          python index.py
+
+      - name: Commit & Push changes
+        run: |
+          git config --global user.name 'Btsonbtson-BOT'
+          git config --global user.email 'Btsonbtson@users.noreply.github.com'
+          git add index.html
+          git commit -m "Automated Daily Report update [$(date +'%Y-%m-%d')]"
+          git push
