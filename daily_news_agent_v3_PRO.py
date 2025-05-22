@@ -67,6 +67,13 @@ html_content = f"""
       <li><a href="https://www.foreignaffairs.com/rss.xml" target="_blank" class="text-blue-600 hover:underline">Foreign Affairs</a></li>
     </ul>
   </section>
+  
+<section class="bg-white shadow-md rounded-lg p-6 mt-10">
+  <h2 class="text-3xl font-bold mb-6 flex items-center"><span class="mr-3">💪</span>Πρόγραμμα Προπονήσεων</h2>
+  <ul class="list-disc list-inside">
+    <li class="mb-2">
+      <strong>Τρίτη 21/05 18:00:</strong> Bodyweight Empowerment<br>
+      <span class="text-sm text-gray-700">Push-ups, squats ​:contentReference[oaicite:0]{index=0}​
 
   <section class="bg-white shadow-md rounded-lg p-6">
     <h2 class="text-3xl font-bold mb-6">📺 YouTube Latest Videos</h2>
