@@ -1,10 +1,9 @@
 from datetime import datetime
 import random
 
-def generate_final_report():
+def generate_report():
     today = datetime.now().strftime("%A %d %B %Y")
     refresh_time = "05:55"
-
     olympiakos_images = [
         "https://upload.wikimedia.org/wikipedia/en/thumb/6/64/Olympiacos_FC.svg/1200px-Olympiacos_FC.svg.png",
         "https://www.olympiacos.org/wp-content/uploads/2022/10/Olympiakos-team.jpg",
@@ -12,7 +11,6 @@ def generate_final_report():
     ]
     olympiakos_image = random.choice(olympiakos_images)
 
-    # Static training section
     training_section = """
     <section class="bg-white shadow-md rounded-lg p-6 mt-10">
       <h2 class="text-3xl font-bold mb-6 flex items-center"><span class="mr-3">💪</span>Πρόγραμμα Προπονήσεων</h2>
@@ -64,6 +62,7 @@ def generate_final_report():
   </header>
 
   <main class="max-w-6xl mx-auto py-10 px-4 grid gap-10">
+
     <section>
       <h2 class="text-2xl font-bold mb-4">📺 YouTube Latest Videos</h2>
       <div class="grid md:grid-cols-3 gap-6">
@@ -98,18 +97,5 @@ def generate_final_report():
       </ul>
     </section>
 
-    {training_section}
-
-  </main>
-
-  <footer class="bg-gray-900 text-white text-center py-4 mt-10 text-sm">
-    © 2025 Ημερήσια Αναφορά
-  </footer>
-</body>
-</html>
-"""
-
-    with open("/mnt/data/daily_news_agent_v3_PRO.py", "w", encoding="utf-8") as f:
-        f.write(f'from datetime import datetime\nimport random\n\ndef generate_final_report():\n    today = datetime.now().strftime("%A %d %B %Y")\n    refresh_time = "05:55"\n\n    olympiakos_images = {olympiakos_images}\n    olympiakos_image = random.choice(olympiakos_images)\n\n    training_section = """{training_section}"""\n\n    html = f"""{html}"""\n\n    with open("index.html", "w", encoding="utf-8") as f:\n        f.write(html)\n\ngenerate_final_report()')
-
-"/mnt/data/daily_news_agent_v3_PRO.py"
+    <section>
+      <h2 class="text-2xl font-bold mb-4">📈 Commod
