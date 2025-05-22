@@ -98,4 +98,22 @@ def generate_report():
     </section>
 
     <section>
-      <h2 class="text-2xl font-bold mb-4">📈 Commod
+      <h2 class="text-2xl font-bold mb-4">📈 Commodities</h2>
+      <a href="https://www.seecapitalmarkets.com/Commodities" target="_blank" class="text-blue-600 hover:underline">Δείτε τις τιμές Commodities</a>
+    </section>
+
+    {training_section}
+
+  </main>
+
+  <footer class="bg-gray-900 text-white text-center py-4 mt-10 text-sm">
+    © 2025 Ημερήσια Αναφορά
+  </footer>
+</body>
+</html>
+"""
+
+    with open("index.html", "w", encoding="utf-8") as f:
+        f.write(html)
+
+generate_report()
