@@ -61,6 +61,7 @@ html_content = f"""<!DOCTYPE html>
   <button onclick="location.reload()" class="mt-2 bg-white text-gray-900 px-4 py-2 rounded shadow hover:bg-gray-200">Ανανέωση</button>
 </header>
 <main class="max-w-6xl mx-auto py-12 px-4 space-y-10">
+"""
 # Συνεντεύξεις Section
 html_content += f"""
 <section>
@@ -119,6 +120,7 @@ html_content += f"""
     <li><a href="https://www.youtube.com/@REDSPORTS7/videos" target="_blank" class="text-blue-600 hover:underline">Red Sports 7</a></li>
   </ul>
 </section>
+"""
 # Πρόγραμμα Προπονήσεων Section
 html_content += f"""
 <section>
@@ -140,3 +142,4 @@ html_content += """
 # Αποθήκευση αρχείου HTML
 with open("index.html", "w", encoding="utf-8") as f:
     f.write(html_content)
+
