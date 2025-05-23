@@ -13,28 +13,53 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body onload="updateRefreshTime()" class="bg-gray-100 text-gray-800">
-
 <header class="bg-gray-900 text-white text-center py-6 shadow">
   <h1 class="text-4xl font-bold">Ημερήσια Αναφορά</h1>
-  <p class="text-lg">Friday 23 May 2025 - Ανανεώθηκε σήμερα στις 05:55</p>
+  <p class="text-lg">Παρασκευή 23 Μαΐου 2025 - Ανανεώθηκε σήμερα στις 05:55</p>
   <p id="lastRefresh" class="text-sm italic"></p>
   <button onclick="location.reload()" class="mt-2 bg-white text-gray-900 px-4 py-2 rounded shadow hover:bg-gray-200">Ανανέωση</button>
 </header>
-
 <main class="max-w-6xl mx-auto py-12 px-4 space-y-10">
 
 <section>
-  <h2 class="text-2xl font-bold mb-4">📺 YouTube Channels</h2>
-  <ul class="list-disc list-inside space-y-2">
-    <li><a href="https://www.youtube.com/@LAMBROSKALARRYTIS/videos" class="text-blue-600 hover:underline" target="_blank">Lambros Kalarrítis</a></li>
-    <li><a href="https://www.youtube.com/@geostratigiki/videos" class="text-blue-600 hover:underline" target="_blank">Geostratigiki</a></li>
-    <li><a href="https://www.youtube.com/@Enimerosi.kai.Skepsi/videos" class="text-blue-600 hover:underline" target="_blank">Enimerosi kai Skepsi</a></li>
+  <h2 class="text-2xl font-bold mb-4">🎤 Συνεντεύξεις</h2>
+  <img src="https://img.youtube.com/vi/naoQ40CzmW8/hqdefault.jpg" alt="Συνεντεύξεις" class="w-64 mb-4 rounded shadow">
+  <ul class="list-disc list-inside space-y-1">
+    <li><a href="https://www.youtube.com/@LAMBROSKALARRYTIS/videos" target="_blank" class="text-blue-600 hover:underline">Lambros Kalarrítis</a></li>
+    <li><a href="https://www.youtube.com/@geostratigiki/videos" target="_blank" class="text-blue-600 hover:underline">Geostratigiki</a></li>
+    <li><a href="https://www.youtube.com/@Enimerosi.kai.Skepsi/videos" target="_blank" class="text-blue-600 hover:underline">Ενημέρωση και Σκέψη</a></li>
   </ul>
 </section>
 
-<section class="bg-white shadow p-6 rounded">
-  <h2 class="text-2xl font-bold mb-4">⚽ SporFM 94.6 (Ολυμπιακός)</h2>
-  <img src="https://cdn.sport-fm.gr/images/news/2024/05/01/olympiacos_goal.jpg" alt="Olympiakos" class="w-40 mb-4">
+<section>
+  <h2 class="text-2xl font-bold mb-4">🌍 Geopolitics & International Relations</h2>
+  <ul class="list-disc list-inside space-y-1">
+    <li><a href="https://www.politico.eu/" target="_blank" class="text-blue-600 hover:underline">Politico</a></li>
+    <li><a href="https://www.reuters.com/" target="_blank" class="text-blue-600 hover:underline">Reuters</a></li>
+    <li><a href="https://www.thestreet.com/" target="_blank" class="text-blue-600 hover:underline">TheStreet</a></li>
+    <li><a href="https://www.economist.com/" target="_blank" class="text-blue-600 hover:underline">The Economist</a></li>
+    <li><a href="https://www.lemonde.fr/en/" target="_blank" class="text-blue-600 hover:underline">Le Monde</a></li>
+    <li><a href="https://flight.com.gr/" target="_blank" class="text-blue-600 hover:underline">Flight.gr</a></li>
+  </ul>
+</section>
+
+<section>
+  <h2 class="text-2xl font-bold mb-4">📊 Top Market Summary</h2>
+  <p>Δείτε όλες τις αγορές μέσω <a href="https://www.bankingnews.gr/" target="_blank" class="text-blue-600 hover:underline">bankingnews.gr</a></p>
+</section>
+
+<section>
+  <h2 class="text-2xl font-bold mb-4">💱 FX / Commodities / Shipping</h2>
+  <ul class="list-disc list-inside space-y-1">
+    <li><a href="https://www.seecapitalmarkets.com/Commodities" target="_blank" class="text-blue-600 hover:underline">Commodities Data</a></li>
+    <li><a href="https://www.seecapitalmarkets.com/Forex" target="_blank" class="text-blue-600 hover:underline">FX Data</a></li>
+    <li><a href="https://www.seecapitalmarkets.com/ShippingIndexes" target="_blank" class="text-blue-600 hover:underline">Shipping Indexes</a></li>
+  </ul>
+</section>
+
+<section>
+  <h2 class="text-2xl font-bold mb-4">🔴⚪ ΘΡΥΛΟΣ ΜΟΝΟ</h2>
+  <img src="https://cdn.sport-fm.gr/images/news/2024/05/01/olympiacos_goal.jpg" alt="Ολυμπιακός" class="w-32 mb-4">
   <ul class="list-disc list-inside">
     <li><a href="https://www.youtube.com/@sporfm946/videos" target="_blank" class="text-blue-600 hover:underline">SporFM 94.6</a></li>
     <li><a href="https://www.youtube.com/@REDSPORTS7/videos" target="_blank" class="text-blue-600 hover:underline">Red Sports 7</a></li>
@@ -42,32 +67,20 @@
 </section>
 
 <section>
-  <h2 class="text-2xl font-bold mb-4">🌍 Geopolitics & International Relations</h2>
-  <ul class="list-disc list-inside">
-    <li><a href="https://www.politico.eu/" target="_blank" class="text-blue-600 hover:underline">Politico</a></li>
-    <li><a href="https://www.reuters.com/" target="_blank" class="text-blue-600 hover:underline">Reuters</a></li>
-    <li><a href="https://www.economist.com/" target="_blank" class="text-blue-600 hover:underline">The Economist</a></li>
-    <li><a href="https://www.foreignaffairs.com/" target="_blank" class="text-blue-600 hover:underline">Foreign Affairs</a></li>
-  </ul>
-</section>
-
-<section>
-  <h2 class="text-2xl font-bold mb-4">📈 Commodities</h2>
-  <a href="https://www.seecapitalmarkets.com/Commodities" target="_blank" class="text-blue-600 hover:underline">Δείτε τις τελευταίες τιμές Commodities</a>
-</section>
-
-<section class="bg-white shadow p-6 rounded">
   <h2 class="text-2xl font-bold mb-4">🏃 Πρόγραμμα Προπονήσεων</h2>
-  <ul class="list-disc list-inside">
-<li><strong>Τρίτη 21 Μαΐου</strong>: Bodyweight Empowerment - <em>Push-ups, squats, planks & burpees. 45 λεπτά</em></li><li><strong>Πέμπτη 23 Μαΐου</strong>: Running RI 4x4' - <em>10.2 km/h, 1'30" rest. 5.0 km</em></li><li><strong>Σάββατο 25 Μαΐου</strong>: Running RE 6km - <em>9.3 km/h pace, last 1 km at 9.5</em></li>
-  </ul>
+  
+<ul>
+  <li><strong>Τρίτη 21 Μαΐου</strong>: Ενδυνάμωση σώματος - <em>Push-ups, squats, planks & burpees</em></li>
+  <li><strong>Πέμπτη 23 Μαΐου</strong>: Running RI 4x4' - <em>10.2 km/h, 1'30" rest. 5.0 km</em></li>
+  <li><strong>Σάββατο 25 Μαΐου</strong>: Running RE 6km - <em>9.3 km/h pace, last 1 km at 9.5</em></li>
+  <li><strong>Κυριακή 26 Μαΐου</strong>: Ενδυνάμωση σώματος - <em>Push-ups, squats, planks & burpees</em></li>
+</ul>
+
 </section>
 
 </main>
-
 <footer class="mt-16 bg-gray-900 text-white text-center py-6 text-sm">
   <p>© 2025 Ημερήσια Αναφορά - Ανανεώνεται καθημερινά</p>
 </footer>
-
 </body>
 </html>
