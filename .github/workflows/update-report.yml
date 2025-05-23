@@ -2,34 +2,37 @@ name: PRO Daily Report Update (05:55 Greece)
 
 on:
   schedule:
-    - cron: '55 3 * * *'  # 05:55 Greece time (03:55 UTC)
-  workflow_dispatch:
+    - cron: '55 2 * * *'  # 05:55 Greece = 02:55 UTC
+  workflow_dispatch:      # Για χειροκίνητη εκτέλεση από το GitHub Actions UI
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout Repository
+      uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install feedparser requests beautifulsoup4 python-dateutil
+    - name: Install dependencies
+      run: |
+        pip install feedparser requests beautifulsoup4 ics
 
-      - name: Run daily report generator
-        run: python daily_news_agent_v3_PRO.py
+    - name: Run Python Script to Generate Report
+      run: python daily_news_agent_v3_PRO.py
 
-      - name: Commit and push index.html
-        run: |
-          git config --global user.email "actions@github.com"
-          git config --global user.name "GitHub Actions"
-          git add index.html
-          git commit -m "Auto-update daily report"
-          git push
+    - name: Commit and Push index.html
+      run: |
+        git config --global user.name 'PRO Bot'
+        git config --global user.email 'bot@example.com'
+        git add index.html
+        git commit -m "🔄 Daily report update: $(date '+%Y-%m-%d %H:%M:%S')"
+        git push
+
+    - name: Send WhatsApp Reminder via CallMeBot
+      run: |
+        curl "https://api.callmebot.com/whatsapp.php?phone=+306932377969&text=✅+Το+Ημερήσιο+Report+είναι+έτοιμο:+https://btsonbtson.github.io/NewsBrief/&apikey=2318162"
