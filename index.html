@@ -2,97 +2,63 @@
 <html lang="el">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ημερήσια Ενημέρωση</title>
+    <title>Ημερήσια Αναφορά</title>
+    <script>
+        function updateTimestamp() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString("el-GR", { hour: '2-digit', minute: '2-digit' });
+            document.getElementById("lastUpdate").textContent = "Τελευταία ενημέρωση σήμερα στις " + timeStr;
+        }
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 text-gray-900">
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">
 
-    <!-- Header -->
-    <header class="bg-gray-900 text-white py-8 text-center">
-        <h1 class="text-4xl font-bold">Ημερήσια Αναφορά</h1>
-        <p class="mt-2 text-lg">Πέμπτη 16 Μαΐου 2025 - Ανανεώνεται καθημερινά στις 05:55</p>
-    </header>
+<!-- Header -->
+<header class="bg-gray-900 text-white py-6 text-center">
+    <h1 class="text-4xl font-bold">Ημερήσια Αναφορά</h1>
+    <p id="lastUpdate" class="text-lg mt-2">Παρασκευή 23 Μαΐου 2025 - Ανανεώθηκε σήμερα στις 05:55</p>
+    <button onclick="updateTimestamp()" class="mt-4 bg-white text-gray-900 px-4 py-2 rounded shadow hover:bg-gray-200">Ανανέωση</button>
+</header>
 
-    <!-- YouTube Latest Videos Section -->
-    <section class="max-w-7xl mx-auto py-12 px-4">
-        <h2 class="text-3xl font-bold mb-6 flex items-center"><span class="mr-3">📺</span>YouTube Latest Videos</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                <img src="https://i.ytimg.com/vi/naoQ40CzmW8/maxresdefault.jpg" alt="Video 1">
-                <div class="p-4">
-                    <h3 class="font-semibold mb-2">Λάμπρος Καλαρρύτης</h3>
-                    <a href="https://www.youtube.com/@LAMBROSKALARRYTIS/videos" target="_blank" class="text-blue-600 hover:underline">Δείτε το κανάλι</a>
-                </div>
-            </div>
-            <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                <img src="https://i.ytimg.com/vi/kUgCkiGqLho/maxresdefault.jpg" alt="Video 2">
-                <div class="p-4">
-                    <h3 class="font-semibold mb-2">Geostratigiki</h3>
-                    <a href="https://www.youtube.com/@geostratigiki/videos" target="_blank" class="text-blue-600 hover:underline">Δείτε το κανάλι</a>
-                </div>
-            </div>
-            <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                <img src="https://i.ytimg.com/vi/-t_nVMvpF8A/maxresdefault.jpg" alt="Video 3">
-                <div class="p-4">
-                    <h3 class="font-semibold mb-2">SporFM 94.6 (Ολυμπιακός)</h3>
-                    <a href="https://www.youtube.com/@sporfm946/videos" target="_blank" class="text-blue-600 hover:underline">Δείτε το κανάλι</a>
-                </div>
-            </div>
+<!-- YouTube Latest Videos -->
+<section class="max-w-6xl mx-auto py-12 px-4">
+    <h2 class="text-2xl font-bold mb-6">📺 YouTube Latest Videos</h2>
+    <div class="grid md:grid-cols-3 gap-6">
+
+        <div class="bg-white p-4 shadow-md rounded-lg">
+            <h3 class="text-lg font-semibold">Lambros Kalarrítis</h3>
+            <a href="https://www.youtube.com/@LAMBROSKALARRYTIS/videos" target="_blank" class="text-blue-600 hover:underline">Δείτε το κανάλι</a>
         </div>
-    </section>
-
-    <!-- Sports Section -->
-    <section class="max-w-7xl mx-auto py-12 px-4">
-        <h2 class="text-3xl font-bold mb-6 flex items-center"><span class="mr-3">⚽</span>Sports YouTube Channels</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="bg-white shadow-md rounded-lg p-6">
-                <h3 class="text-xl font-semibold mb-3">SporFM 94.6</h3>
-                <a href="https://www.youtube.com/@sporfm946/videos" target="_blank" class="text-blue-600 hover:underline">Δείτε όλα τα videos</a>
-            </div>
-            <div class="bg-white shadow-md rounded-lg p-6">
-                <h3 class="text-xl font-semibold mb-3">RedSports 7</h3>
-                <a href="https://www.youtube.com/@REDSPORTS7/videos" target="_blank" class="text-blue-600 hover:underline">Δείτε όλα τα videos</a>
-            </div>
+    
+        <div class="bg-white p-4 shadow-md rounded-lg">
+            <h3 class="text-lg font-semibold">Geostratigiki</h3>
+            <a href="https://www.youtube.com/@geostratigiki/videos" target="_blank" class="text-blue-600 hover:underline">Δείτε το κανάλι</a>
         </div>
-    </section>
+    
+        <div class="bg-white p-4 shadow-md rounded-lg">
+            <h3 class="text-lg font-semibold">Enimerosi kai Skepsi</h3>
+            <a href="https://www.youtube.com/@Enimerosi.kai.Skepsi/videos" target="_blank" class="text-blue-600 hover:underline">Δείτε το κανάλι</a>
+        </div>
+    
+    </div>
+</section>
 
-    <!-- Geopolitics Section -->
-    <section class="max-w-7xl mx-auto py-12 px-4 bg-white shadow-md rounded-lg">
-        <h2 class="text-3xl font-bold mb-6 flex items-center"><span class="mr-3">🌍</span>Geopolitics & International Relations</h2>
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Political_World_Map.jpg/800px-Political_World_Map.jpg" alt="Geopolitics Map" class="w-full mb-6 rounded-lg">
-        <p class="text-lg">Διαβάστε τις τελευταίες γεωπολιτικές εξελίξεις μέσα από τις προτεινόμενες πηγές:</p>
-        <ul class="list-disc list-inside mt-4">
-            <li><a href="https://www.defence-point.gr/news/" target="_blank" class="text-blue-600 hover:underline">Defence Point</a></li>
-            <li><a href="https://elisme.gr/" target="_blank" class="text-blue-600 hover:underline">Elisme</a></li>
-            <li><a href="https://nordicmonitor.com/" target="_blank" class="text-blue-600 hover:underline">Nordic Monitor</a></li>
-            <li><a href="https://foreignaffairs.com/" target="_blank" class="text-blue-600 hover:underline">Foreign Affairs</a></li>
-        </ul>
-    </section>
-
-    <!-- Markets Section -->
-    <section class="max-w-7xl mx-auto py-12 px-4">
-        <h2 class="text-3xl font-bold mb-6 flex items-center"><span class="mr-3">📈</span>Top Market Summary</h2>
-        <a href="https://www.bankingnews.gr/" target="_blank" class="text-blue-600 hover:underline">Bankingnews.gr - Δείτε τα τελευταία δεδομένα εδώ</a>
-    </section>
-
-    <!-- Shipping Indexes Section -->
-    <section class="max-w-7xl mx-auto py-12 px-4 bg-white shadow-md rounded-lg">
-        <h2 class="text-3xl font-bold mb-6 flex items-center"><span class="mr-3">🚢</span>Shipping Indexes Daily Values</h2>
-        <a href="https://www.seecapitalmarkets.com/ShippingIndexes" target="_blank" class="text-blue-600 hover:underline">Δείτε τα τελευταία Shipping Indexes</a>
-    </section>
-
-    <!-- Commodities Section -->
-    <section class="max-w-7xl mx-auto py-12 px-4">
-        <h2 class="text-3xl font-bold mb-6 flex items-center"><span class="mr-3">💰</span>Commodities & Forex</h2>
-        <a href="https://www.seecapitalmarkets.com/Commodities" target="_blank" class="text-blue-600 hover:underline">Δείτε Commodities</a> | 
-        <a href="https://www.seecapitalmarkets.com/Forex" target="_blank" class="text-blue-600 hover:underline">Δείτε Forex</a>
-    </section>
-
-    <!-- Footer -->
-    <footer class="mt-16 bg-gray-900 text-white py-8 text-center">
-        <p>© 2025 Ημερήσια Αναφορά - Ανανεώνεται στις 05:55 καθημερινά μέσω GitHub Actions</p>
-    </footer>
-
-</body>
-</html>
+<!-- Sports Section -->
+<section class="max-w-6xl mx-auto py-12 px-4 bg-white shadow-md rounded-lg">
+    <h2 class="text-2xl font-bold mb-6">⚽ SporFM 94.6 (Ολυμπιακός)</h2>
+    <img src="https://cdn.sport-fm.gr/images/news/2024/05/01/olympiacos_goal.jpg" alt="Olympiacos" class="w-32 mb-4 rounded">
+    <ul class="list-disc list-inside">
+<li><a href="https://www.youtube.com/@sporfm946/videos" class="text-blue-600 hover:underline" target="_blank">SporFM 94.6 (Ολυμπιακός)</a></li><li><a href="https://www.youtube.com/@REDSPORTS7/videos" class="text-blue-600 hover:underline" target="_blank">Red Sports 7</a></li></ul></section>
+<section class="max-w-6xl mx-auto py-12 px-4">
+    <h2 class="text-2xl font-bold mb-6">🌍 Geopolitics & International Relations</h2>
+    <ul class="list-disc list-inside">
+<li><a href="https://www.defence-point.gr/news/" target="_blank" class="text-blue-600 hover:underline">Defence Point</a></li><li><a href="https://elisme.gr/" target="_blank" class="text-blue-600 hover:underline">Elisme</a></li><li><a href="https://nordicmonitor.com/" target="_blank" class="text-blue-600 hover:underline">Nordic Monitor</a></li><li><a href="https://foreignaffairs.com/" target="_blank" class="text-blue-600 hover:underline">Foreign Affairs</a></li></ul></section>
+<section class="max-w-6xl mx-auto py-12 px-4 bg-white shadow-md rounded-lg">
+    <h2 class="text-2xl font-bold mb-6">🏃 Πρόγραμμα Προπονήσεων</h2>
+    <ul class="list-disc list-inside">
+<li><strong>Τρίτη 21 Μαΐου</strong>: Ενδυνάμωση σώματος - <em>Push-ups, squats, planks & burpees.</em></li><li><strong>Τετάρτη 22 Μαΐου</strong>: Ενδυνάμωση σώματος - <em>Push-ups, squats, planks & burpees.</em></li><li><strong>Πέμπτη 23 Μαΐου</strong>: Running RHR 4x4' - <em>7.5+4% for 4x4', 2' rest. 3.2/4.0 km</em></li><li><strong>Παρασκευή 24 Μαΐου</strong>: Ενδυνάμωση σώματος - <em>Push-ups, squats, planks & burpees.</em></li><li><strong>Σάββατο 25 Μαΐου</strong>: Running RE 6km - <em>9.3 km/h pace, last 1 km at 9.5.</em></li><li><strong>Κυριακή 26 Μαΐου</strong>: Ενδυνάμωση σώματος - <em>Push-ups, squats, planks & burpees.</em></li></ul></section>
+<footer class="mt-12 bg-gray-900 text-white text-center py-6">
+    <p>© 2025 Ημερήσια Αναφορά - Powered by GPT & GitHub Actions</p>
+</footer>
+</body></html>
