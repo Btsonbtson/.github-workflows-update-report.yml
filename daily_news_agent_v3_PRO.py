@@ -8,10 +8,11 @@ from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 from ics import Calendar
 
+# Directory setup
 NEWS_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_FILE = os.path.join(NEWS_DIR, "index.html")
 
-# --- Ρυθμίσεις πηγών ---
+# Data sources
 GEOPOLITICS_FEEDS = [
     'https://www.politico.eu/rss/feed.xml',
     'https://feeds.reuters.com/reuters/topNews',
@@ -59,8 +60,8 @@ GEOPOLITICS_IMAGES = [
 ]
 
 MARKET_IMAGES = [
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Stock_market_indices_graph_%28August_2023%29.png/800px-Stock_market_indices_graph_%28August_2023%29.png",
     "https://tradingeconomics.com/charts/sp-500.png",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Stock_market_indices_graph_%28August_2023%29.png/800px-Stock_market_indices_graph_%28August_2023%29.png",
 ]
 
 COMMODITY_IMAGES = [
@@ -68,24 +69,20 @@ COMMODITY_IMAGES = [
     "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Shipping_containers_at_Port_of_Singapore.jpg/800px-Shipping_containers_at_Port_of_Singapore.jpg",
 ]
 
-# Keywords για φιλτράρισμα θεματολογίας
+TRAINING_IMAGES = [
+    "https://images.unsplash.com/photo-1517836357463-d25dfead9741?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+]
+
+# Keywords for filtering
 TOPIC_KEYWORDS = {
     "Ελληνο-Τουρκικές Σχέσεις": ["Greece-Turkey", "Greek-Turkish", "Ελληνο-Τουρκικές", "Ελλάδα-Τουρκία", "Aegean", "Cyprus"],
     "Γεωπολιτική": ["Geopolitics", "Geopolitical", "Γεωπολιτική", "NATO", "EU", "Middle East", "Russia", "China"],
     "Διεθνείς Σχέσεις": ["International Relations", "Diplomacy", "Διεθνείς Σχέσεις", "Foreign Policy", "United Nations"],
 }
 
-def random_geopolitics_image():
-    return random.choice(GEOPOLITICS_IMAGES)
-
-def random_market_image():
-    return random.choice(MARKET_IMAGES)
-
-def random_commodity_image():
-    return random.choice(COMMODITY_IMAGES)
-
-def random_sport_image():
-    return random.choice(SPORT_IMAGES)
+def random_image(image_list):
+    return random.choice(image_list)
 
 def fetch_feed_links(urls, max_items=4):
     headlines = []
@@ -168,7 +165,7 @@ def scrape_additional_sources():
         try:
             response = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
             soup = BeautifulSoup(response.text, 'html.parser')
-            articles = soup.select(selector, limit=4)
+            articles = soup.select(selector)[:4]
 
             for article in articles:
                 title = article.text.strip()
@@ -193,6 +190,7 @@ def scrape_additional_sources():
 
 def fetch_youtube_videos():
     videos = {}
+    now-prev 2
     now = datetime.now(pytz.UTC)
     last_24_hours = now - timedelta(hours=24)
 
@@ -209,7 +207,7 @@ def fetch_youtube_videos():
                 pub_datetime = datetime(*pub_date[:6], tzinfo=pytz.UTC)
                 if pub_datetime < last_24_hours:
                     continue
-                video_id = entry.link.split("v=")[1]
+                video_id = entry.link.split("v=")[1].split("&")[0]
                 thumbnail = f"https://img.youtube.com/vi/{video_id}/hqdefault.jpg"
                 videos[channel_name].append((entry.title, entry.link, thumbnail))
         except Exception as e:
@@ -243,32 +241,40 @@ def fetch_market_data():
             market_data[name] = "N/A"
 
     market_data["Baltic Dry Index"] = "N/A (requires API or scraping)"
-
     return market_data
 
 def format_training_program_from_ics(file_path):
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
             calendar = Calendar(f.read())
-        now = datetime.now()
+        now = datetime.now(pytz.timezone("Europe/Athens"))
         week_later = now + timedelta(days=7)
-        event_html = '<section class="max-w-4xl mx-auto py-12 px-4"><h2 class="text-2xl font-bold mb-4">🏃 Πρόγραμμα Προπονήσεων</h2><ul class="list-disc list-inside text-md">'
+        event_html = '<ul class="list-disc list-inside text-md">'
 
         for e in sorted(calendar.events):
             if now.date() <= e.begin.date() <= week_later.date():
                 local_date = e.begin.astimezone(pytz.timezone("Europe/Athens"))
                 weekday = local_date.strftime('%A').replace("Monday", "Δευτέρα").replace("Tuesday", "Τρίτη").replace("Wednesday", "Τετάρτη").replace("Thursday", "Πέμπτη").replace("Friday", "Παρασκευή").replace("Saturday", "Σάββατο").replace("Sunday", "Κυριακή")
-                date_str = local_date.strftime("%d %B").replace("May", "Μαΐου")
+                date_str = local_date.strftime("%d %B").replace("January", "Ιανουαρίου").replace("February", "Φεβρουαρίου").replace("March", "Μαρτίου").replace("April", "Απριλίου").replace("May", "Μαΐου").replace("June", "Ιουνίου").replace("July", "Ιουλίου").replace("August", "Αυγούστου").replace("September", "Σεπτεμβρίου").replace("October", "Οκτωβρίου").replace("November", "Νοεμβρίου").replace("December", "Δεκεμβρίου")
                 event_html += f'<li><strong>{weekday} {date_str}</strong>: {e.name} - <em>{e.description or "Χωρίς περιγραφή"}</em></li>'
-        event_html += '</ul></section>'
+        event_html += '</ul>'
         return event_html
     except FileNotFoundError:
-        return '<section class="max-w-4xl mx-auto py-12 px-4"><h2 class="text-2xl font-bold mb-4">🏃 Πρόγραμμα Προπονήσεων</h2><p>Το πρόγραμμα προπονήσεων δεν είναι διαθέσιμο αυτή τη στιγμή.</p></section>'
+        # Fallback static schedule starting from Saturday, May 24, 2025
+        return """
+        <ul class="list-disc list-inside text-md">
+            <li><strong>Σάββατο 24 Μαΐου</strong>: Ενδυνάμωση σώματος - <em>Push-ups, squats, planks & burpees</em></li>
+            <li><strong>Κυριακή 25 Μαΐου</strong>: Running RI 4x4' - <em>10.2 km/h, 1'30" rest. 5.0 km</em></li>
+            <li><strong>Δευτέρα 26 Μαΐου</strong>: Running RE 6km - <em>9.3 km/h pace, last 1 km at 9.5</em></li>
+            <li><strong>Τρίτη 27 Μαΐου</strong>: Ενδυνάμωση σώματος - <em>Push-ups, squats, planks & burpees</em></li>
+        </ul>
+        """
     except Exception as e:
-        return f'<section class="max-w-4xl mx-auto py-12 px-4"><h2 class="text-2xl font-bold mb-4">🏃 Πρόγραμμα Προπονήσεων</h2><p>Σφάλμα κατά την ανάγνωση του ημερολογίου: {e}</p></section>'
+        return f'<p>Σφάλμα κατά την ανάγνωση του ημερολογίου: {e}</p>'
 
 def build_html():
     athens_time = datetime.now(pytz.timezone("Europe/Athens"))
+    today_str = athens_time.strftime("%A %d %B %Y").replace("Monday", "Δευτέρα").replace("Tuesday", "Τρίτη").replace("Wednesday", "Τετάρτη").replace("Thursday", "Πέμπτη").replace("Friday", "Παρασκευή").replace("Saturday", "Σάββατο").replace("Sunday", "Κυριακή").replace("January", "Ιανουαρίου").replace("February", "Φεβρουαρίου").replace("March", "Μαρτίου").replace("April", "Απριλίου").replace("May", "Μαΐου").replace("June", "Ιουνίου").replace("July", "Ιουλίου").replace("August", "Αυγούστου").replace("September", "Σεπτεμβρίου").replace("October", "Οκτωβρίου").replace("November", "Νοεμβρίου").replace("December", "Δεκεμβρίου")
     refresh_time = athens_time.strftime("%H:%M %p").lower().replace("am", "π.μ.").replace("pm", "μ.μ.")
 
     html = f"""<!DOCTYPE html>
@@ -289,26 +295,32 @@ def build_html():
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body onload="updateRefreshTime()" class="bg-gray-100 text-gray-900">
-    <header class="bg-gray-900 text-white py-6">
+    <header class="bg-gray-900 text-white py-8">
         <div class="text-center">
-            <h1 class="text-3xl font-bold">Ημερήσια Αναφορά</h1>
-            <p class="mt-2">Ημερήσια ενημέρωση: 05:55 π.μ. (Ώρα Ελλάδας)</p>
-            <p id="last-refresh" class="mt-1">Τελευταία ανανέωση σελίδας: {refresh_time}</p>
+            <h1 class="text-4xl font-bold">Ημερήσια Αναφορά</h1>
+            <p class="mt-2 text-lg">{today_str}</p>
+            <p id="last-refresh" class="mt-1 text-sm italic">Τελευταία ανανέωση σελίδας: {refresh_time}</p>
             <button onclick="location.reload()" class="mt-4 px-4 py-2 bg-white text-gray-900 rounded hover:bg-gray-300 transition">Ανανέωση</button>
         </div>
     </header>
-    <main class="py-10 px-6 max-w-6xl mx-auto">
+    <main class="py-12 px-6 max-w-6xl mx-auto space-y-10">
 """
 
     # Συνεντεύξεις
     youtube_videos = fetch_youtube_videos()
-    html += '<section class="py-6"><h2 class="text-xl font-semibold mb-4">📺 Συνεντεύξεις</h2><div class="grid grid-cols-1 md:grid-cols-3 gap-4">'
-    for channel_name, _ in YOUTUBE_FEEDS[:3]:
+    html += '<section class="py-6"><h2 class="text-2xl font-semibold mb-4">📺 Συνεντεύξεις</h2><div class="grid grid-cols-1 md:grid-cols-3 gap-6">'
+    for channel_name, feed_url in YOUTUBE_FEEDS[:3]:
         videos = youtube_videos.get(channel_name, [])
+        thumbnail = videos[0][2] if videos else random.choice([
+            "https://img.youtube.com/vi/naoQ40CzmW8/hqdefault.jpg",
+            "https://img.youtube.com/vi/kUgCkiGqLho/hqdefault.jpg",
+            "https://img.youtube.com/vi/fUN1cw8GbXs/hqdefault.jpg"
+        ])
         html += f"""
-        <div class="bg-white shadow rounded p-4">
-            <h3 class="font-semibold">{channel_name}</h3>
-            {"".join([f'<p class="mt-2"><a href="{link}" class="text-blue-600 hover:underline">{title}</a></p><img src="{thumbnail}" class="w-full h-40 object-cover rounded mt-2" alt="{title}">' for title, link, thumbnail in videos]) if videos else '<p>Δεν βρέθηκαν πρόσφατα βίντεο.</p>'}
+        <div class="bg-white shadow rounded-lg p-4">
+            <h3 class="font-semibold text-lg">{channel_name}</h3>
+            <img src="{thumbnail}" class="w-full h-40 object-cover rounded mt-2" alt="{channel_name}">
+            {"".join([f'<p class="mt-2"><a href="{link}" class="text-blue-600 hover:underline">{title}</a></p>' for title, link, _ in videos]) if videos else '<p>Δεν βρέθηκαν πρόσφατα βίντεο.</p>'}
         </div>
         """
     html += '</div></section>'
@@ -319,81 +331,92 @@ def build_html():
     additional_headlines = scrape_additional_sources()
     headlines.extend(thestreet_headlines)
     headlines.extend(additional_headlines)
-
     html += f"""
-    <section class="py-6 bg-blue-50 rounded-lg shadow"><h2 class="text-xl font-semibold mb-2 text-blue-800">🌐 Geopolitics & International Relations</h2>
-    <img src="{random_geopolitics_image()}" class="w-full rounded shadow mb-4" alt="Geopolitics Map">
-    <h3 class="text-lg font-semibold mt-4 mb-2 text-blue-700">Πηγές</h3><ul class="list-disc list-inside">
-    {''.join([f'<li><a href="{link}" class="text-blue-600 hover:underline">{name}</a></li>' for name, link in STATIC_GEOPOLITICS_LINKS])}
-    </ul>
-    <h3 class="text-lg font-semibold mt-4 mb-2 text-blue-700">Πρόσφατα Νέα (Τελευταίες 24 Ώρες)</h3><ul class="list-disc list-inside">
-    {''.join(headlines) if headlines else '<li>Δεν βρέθηκαν πρόσφατα νέα για τις επιλεγμένες θεματολογίες.</li>'}
-    </ul></section>"""
+    <section class="py-6 bg-blue-50 rounded-lg shadow">
+        <h2 class="text-2xl font-semibold mb-4 text-blue-800">🌐 Geopolitics & International Relations</h2>
+        <img src="{random_image(GEOPOLITICS_IMAGES)}" class="w-full h-64 object-cover rounded-lg shadow mb-4" alt="Geopolitics Map">
+        <h3 class="text-lg font-semibold mb-2 text-blue-700">Πηγές</h3>
+        <ul class="list-disc list-inside space-y-1">
+            {''.join([f'<li><a href="{link}" class="text-blue-600 hover:underline">{name}</a></li>' for name, link in STATIC_GEOPOLITICS_LINKS])}
+        </ul>
+        <h3 class="text-lg font-semibold mt-4 mb-2 text-blue-700">Πρόσφατα Νέα (Τελευταίες 24 Ώρες)</h3>
+        <ul class="list-disc list-inside space-y-1">
+            {''.join(headlines) if headlines else '<li>Δεν βρέθηκαν πρόσφατα νέα για τις επιλεγμένες θεματολογίες.</li>'}
+        </ul>
+    </section>"""
 
     # Markets
-    market_img = random_market_image()
     html += f"""
-    <section class="py-6"><h2 class="text-xl font-semibold mb-2">📈 Markets Summary</h2>
-    <img src="{market_img}" class="w-full rounded shadow mb-4" alt="Markets Summary Image" onerror="this.onerror=null; this.parentElement.innerHTML='<p>Η εικόνα για την Αναφορά Αγορών δεν είναι διαθέσιμη.</p>';">
+    <section class="py-6">
+        <h2 class="text-2xl font-semibold mb-4">📈 Markets Summary</h2>
+        <img src="{random_image(MARKET_IMAGES)}" class="w-full h-64 object-cover rounded-lg shadow mb-4" alt="Stock Market Chart" onerror="this.parentElement.innerHTML='<p>Η εικόνα για την Αναφορά Αγορών δεν είναι διαθέσιμη.</p>';">
+        <p>Δείτε όλες τις αγορές μέσω <a href="https://www.bankingnews.gr/" class="text-blue-600 hover:underline">bankingnews.gr</a></p>
     </section>"""
 
     # Commodities / FX / Shipping
     market_data = fetch_market_data()
     html += f"""
-    <section class="py-6"><h2 class="text-xl font-semibold mb-2">💱 Commodities / FX / Shipping</h2>
-    <img src="{random_commodity_image()}" class="w-full rounded shadow mb-4" alt="Commodities Image">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-            <h3 class="text-lg font-semibold mb-2">FX</h3>
-            <p>EUR/USD: {market_data['EUR/USD']}</p>
+    <section class="py-6">
+        <h2 class="text-2xl font-semibold mb-4">💱 Commodities / FX / Shipping</h2>
+        <img src="{random_image(COMMODITY_IMAGES)}" class="w-full h-64 object-cover rounded-lg shadow mb-4" alt="Commodities Image">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <h3 class="text-lg font-semibold mb-2">FX</h3>
+                <p>EUR/USD: {market_data['EUR/USD']}</p>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold mb-2">Commodities</h3>
+                <p>Brent Crude: {market_data['Brent Crude']}</p>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold mb-2">Stock Indexes</h3>
+                <p>S&P500: {market_data['S&P500']}</p>
+                <p>DJI: {market_data['DJI']}</p>
+                <p>Nasdaq: {market_data['Nasdaq']}</p>
+                <p>FTSE: {market_data['FTSE']}</p>
+                <p>ASE: {market_data['ASE']}</p>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold mb-2">Shipping</h3>
+                <p>Baltic Dry Index: {market_data['Baltic Dry Index']}</p>
+            </div>
         </div>
-        <div>
-            <h3 class="text-lg font-semibold mb-2">Commodities</h3>
-            <p>Brent Crude: {market_data['Brent Crude']}</p>
-        </div>
-        <div>
-            <h3 class="text-lg font-semibold mb-2">Stock Indexes</h3>
-            <p>S&P500: {market_data['S&P500']}</p>
-            <p>DJI: {market_data['DJI']}</p>
-            <p>Nasdaq: {market_data['Nasdaq']}</p>
-            <p>FTSE: {market_data['FTSE']}</p>
-            <p>ASE: {market_data['ASE']}</p>
-        </div>
-        <div>
-            <h3 class="text-lg font-semibold mb-2">Shipping</h3>
-            <p>Baltic Dry Index: {market_data['Baltic Dry Index']}</p>
-        </div>
-    </div>
     </section>"""
 
     # ΘΡΥΛΟΣ ΜΟΝΟ
     html += f"""
-    <section class="py-6 bg-red-50 rounded-lg shadow"><h2 class="text-xl font-semibold mb-2 text-red-800">🔴 ⚪ ΘΡΥΛΟΣ ΜΟΝΟ</h2>
-    <img src="{random_sport_image()}" class="w-full rounded shadow mb-4" alt="Olympiacos Image">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-            <h3 class="text-lg font-semibold mb-2 text-red-700">YouTube Latest Videos</h3>
-            <div class="flex items-center space-x-4">
-                <img src="https://www.olympiacos.org/wp-content/uploads/2023/03/mendilibar.jpg" class="w-24 h-24 rounded" alt="Mendilibar">
-                <div>
-                    <p><a href="{SPORTS_LINKS['SporFM 94.6 (Ολυμπιακός)']}" class="text-red-600 hover:underline">SporFM 94.6 (Ολυμπιακός)</a></p>
-                    {"".join([f'<p class="mt-2"><a href="{link}" class="text-red-600 hover:underline">{title}</a></p>' for title, link, _ in youtube_videos.get("SporFM 94.6 (Ολυμπιακός)", [])])}
+    <section class="py-6 bg-red-50 rounded-lg shadow">
+        <h2 class="text-2xl font-semibold mb-4 text-red-800">🔴 ⚪ ΘΡΥΛΟΣ ΜΟΝΟ</h2>
+        <img src="{random_image(SPORT_IMAGES)}" class="w-full h-64 object-cover rounded-lg shadow mb-4" alt="Olympiacos Image">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <h3 class="text-lg font-semibold mb-2 text-red-700">YouTube Latest Videos</h3>
+                <div class="flex items-center space-x-4">
+                    <img src="https://www.olympiacos.org/wp-content/uploads/2023/03/mendilibar.jpg" class="w-24 h-24 rounded" alt="Mendilibar">
+                    <div>
+                        <p><a href="{SPORTS_LINKS['SporFM 94.6 (Ολυμπιακός)']}" class="text-red-600 hover:underline">SporFM 94.6 (Ολυμπιακός)</a></p>
+                        {"".join([f'<p class="mt-2"><a href="{link}" class="text-red-600 hover:underline">{title}</a></p>' for title, link, _ in youtube_videos.get("SporFM 94.6 (Ολυμπιακός)", [])])}
+                    </div>
                 </div>
+                <p class="mt-2"><a href="{SPORTS_LINKS['Red Sports 7']}" class="text-red-600 hover:underline">Red Sports 7</a></p>
+                {"".join([f'<p class="mt-2"><a href="{link}" class="text-red-600 hover:underline">{title}</a></p>' for title, link, _ in youtube_videos.get("Red Sports 7", [])])}
             </div>
-            <p class="mt-2"><a href="{SPORTS_LINKS['Red Sports 7']}" class="text-red-600 hover:underline">Red Sports 7</a></p>
-            {"".join([f'<p class="mt-2"><a href="{link}" class="text-red-600 hover:underline">{title}</a></p>' for title, link, _ in youtube_videos.get("Red Sports 7", [])])}
         </div>
-    </div>
     </section>"""
 
     # Πρόγραμμα προπονήσεων
-    html += format_training_program_from_ics(os.path.join(NEWS_DIR, "full_training_plan_may2025.ics"))
+    html += f"""
+    <section class="py-6">
+        <h2 class="text-2xl font-semibold mb-4">🏃 Πρόγραμμα Προπονήσεων</h2>
+        <img src="{random_image(TRAINING_IMAGES)}" class="w-full h-64 object-cover rounded-lg shadow mb-4" alt="Training Session">
+        {format_training_program_from_ics(os.path.join(NEWS_DIR, "full_training_plan_may2025.ics"))}
+    </section>"""
 
     # Κλείσιμο
     html += """
     </main>
-    <footer class="text-center text-gray-500 text-sm py-4 mt-8 bg-gray-200">
-        © 2025 Ημερήσια Αναφορά - Ανανεώνεται καθημερινά στις 05:55 | <a href="https://github.com/Btsonbtson/NewsBrief" class="text-blue-600 hover:underline">GitHub</a>
+    <footer class="text-center text-gray-500 text-sm py-6 mt-8 bg-gray-200">
+        © 2025 Ημερήσια Αναφορά - Ανανεώνεται καθημερινά | <a href="https://github.com/Btsonbtson/NewsBrief" class="text-blue-600 hover:underline">GitHub</a>
     </footer>
 </body>
 </html>"""
