@@ -21,11 +21,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install feedparser beautifulsoup4 requests ics pytz
-          
-      - name: Install dependencies
-        run: |
-         pip install feedparser beautifulsoup4 requests python-dateutil pytz ics
+          pip install feedparser beautifulsoup4 requests ics pytz python-dateutil yfinance
 
       - name: Run Python Script to Generate Report
         run: python daily_news_agent_v3_PRO.py
