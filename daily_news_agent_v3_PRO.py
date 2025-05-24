@@ -12,13 +12,11 @@ OUTPUT_FILE = os.path.join(NEWS_DIR, "index.html")
 
 # --- Ρυθμίσεις πηγών ---
 GEOPOLITICS_FEEDS = [
-    'https://www.politico.eu/feed/',
-    'https://www.reuters.com/tools/rss',
-    'https://www.thestreet.com/feeds/rss/articles',
-    'https://www.lemonde.fr/en/rss/une.xml',
-    'https://www.economist.com/rss',
-    'https://www.foreignaffairs.com/rss.xml',
-    'https://www.rednews.gr/feed/'
+    'https://www.politico.eu/rss/feed.xml',  # Ενημερωμένο RSS feed
+    'https://feeds.reuters.com/reuters/topNews',  # Ενημερωμένο Reuters feed
+    'https://www.lemonde.fr/en/international/rss_full.xml',  # Ενημερωμένο LeMonde feed
+    'https://www.foreignaffairs.com/rss.xml',  # Λειτουργεί
+    'https://www.rednews.gr/feed/'  # Λειτουργεί
 ]
 
 STATIC_GEOPOLITICS_LINKS = [
@@ -49,15 +47,13 @@ SPORTS_LINKS = {
 }
 
 MARKET_IMAGES = [
-    "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3",
-    "https://images.unsplash.com/photo-1590283603385-17d352d74a38",
-    "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3"
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Stock_market_indices_graph_%28August_2023%29.png/800px-Stock_market_indices_graph_%28August_2023%29.png",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Stock_Market_Display.jpg/800px-Stock_Market_Display.jpg"
 ]
 
 COMMODITY_IMAGES = [
-    "https://images.unsplash.com/photo-1590283603385-17d352d74a38",
-    "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3",
-    "https://images.unsplash.com/photo-1590283603385-17d352d74a38"
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Oil_prices_1970-2017.png/800px-Oil_prices_1970-2017.png",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Shipping_containers_at_Port_of_Singapore.jpg/800px-Shipping_containers_at_Port_of_Singapore.jpg"
 ]
 
 def random_interview_image():
@@ -77,6 +73,9 @@ def fetch_feed_links(urls, max_items=4):
     for url in urls:
         try:
             feed = feedparser.parse(url)
+            if not feed.entries:
+                print(f"No entries found for feed: {url}")
+                continue
             for entry in feed.entries[:max_items]:
                 headlines.append(f'<li><a href="{entry.link}" target="_blank">{entry.title}</a></li>')
         except Exception as e:
@@ -101,9 +100,9 @@ def format_training_program_from_ics(file_path):
         event_html += '</ul></section>'
         return event_html
     except FileNotFoundError:
-        return "<p>Σφάλμα: Το αρχείο ημερολογίου δεν βρέθηκε.</p>"
+        return '<section class="max-w-4xl mx-auto py-12 px-4"><h2 class="text-2xl font-bold mb-4">🏃 Πρόγραμμα Προπονήσεων</h2><p>Το πρόγραμμα προπονήσεων δεν είναι διαθέσιμο αυτή τη στιγμή.</p></section>'
     except Exception as e:
-        return f"<p>Σφάλμα κατά την ανάγνωση του ημερολογίου: {e}</p>"
+        return f'<section class="max-w-4xl mx-auto py-12 px-4"><h2 class="text-2xl font-bold mb-4">🏃 Πρόγραμμα Προπονήσεων</h2><p>Σφάλμα κατά την ανάγνωση του ημερολογίου: {e}</p></section>'
 
 def build_html():
     athens_time = datetime.now(pytz.timezone("Europe/Athens"))
@@ -157,25 +156,27 @@ def build_html():
     # RSS Headlines
     headlines = fetch_feed_links(GEOPOLITICS_FEEDS)
     html += '<h3 class="text-lg font-semibold mt-4 mb-2">Πρόσφατα Νέα</h3><ul class="list-disc list-inside">'
-    html += ''.join(headlines) if headlines else '<li>Δεν βρέθηκαν πρόσφατα νέα.</li>'
+    html += ''.join(headlines) if headlines else '<li>Δεν βρέθηκαν πρόσφατα νέα. Ελέγξτε τη σύνδεση ή τις πηγές.</li>'
     html += '</ul></section>'
 
     # Markets
+    market_img = random_market_image()
     html += f"""
     <section class="py-6"><h2 class="text-xl font-semibold mb-2">📈 Markets Summary</h2>
-    <img src="{random_market_image()}" class="w-full rounded shadow">
+    <img src="{market_img}" class="w-full rounded shadow" alt="Markets Summary Image" onerror="this.onerror=null; this.parentElement.innerHTML='<p>Η εικόνα για την Αναφορά Αγορών δεν είναι διαθέσιμη.</p>';">
     </section>"""
 
     # Commodities
+    commodity_img = random_commodity_image()
     html += f"""
     <section class="py-6"><h2 class="text-xl font-semibold mb-2">💱 Commodities / FX / Shipping</h2>
-    <img src="{random_commodity_image()}" class="w-full rounded shadow">
+    <img src="{commodity_img}" class="w-full rounded shadow" alt="Commodities Image" onerror="this.onerror=null; this.parentElement.innerHTML='<p>Η εικόνα για Commodities / FX / Shipping δεν είναι διαθέσιμη.</p>';">
     </section>"""
 
     # ΘΡΥΛΟΣ ΜΟΝΟ
     html += f"""
     <section class="py-6"><h2 class="text-xl font-semibold mb-2">🔴 ⚪ ΘΡΥΛΟΣ ΜΟΝΟ</h2>
-    <img src="{random_sport_image()}" class="w-full rounded shadow mb-2">
+    <img src="{random_sport_image()}" class="w-full rounded shadow mb-2" alt="Olympiacos Image">
     <ul class="list-disc list-inside text-sm">
         <li><a href="{SPORTS_LINKS['SporFM 94.6 (Ολυμπιακός)']}" class="text-blue-600 hover:underline">SporFM 94.6 (Ολυμπιακός)</a></li>
         <li><a href="{SPORTS_LINKS['Red Sports 7']}" class="text-blue-600 hover:underline">Red Sports 7</a></li>
