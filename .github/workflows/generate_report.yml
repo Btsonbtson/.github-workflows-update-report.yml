@@ -1,0 +1,24 @@
+name: Generate Daily Report
+on:
+  schedule:
+    - cron: '0 5 * * *'  # Runs daily at 5:00 AM UTC
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+    - name: Run script
+      run: python generate_report.py
+    - name: Commit changes
+      run: |
+        git config --global user.name 'GitHub Action'
+        git config --global user.email 'action@github.com'
+        git add index.html
+        git commit -m 'Update daily report'
+        git push
