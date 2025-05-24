@@ -43,6 +43,35 @@ YOUTUBE_CHANNELS = [
     ("Enimerosi kai Skepsi", "https://www.youtube.com/@Enimerosi.kai.Skepsi", "https://img.youtube.com/vi/XiXPo3Eq0Jk/0.jpg")
 ]
 
+SPORTS_LINKS = {
+    'SporFM 94.6 (Ολυμπιακός)': 'https://www.sport-fm.gr/',
+    'Red Sports 7': 'https://www.redsports7.gr/'
+}
+
+MARKET_IMAGES = [
+    "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3",
+    "https://images.unsplash.com/photo-1590283603385-17d352d74a38",
+    "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3"
+]
+
+COMMODITY_IMAGES = [
+    "https://images.unsplash.com/photo-1590283603385-17d352d74a38",
+    "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3",
+    "https://images.unsplash.com/photo-1590283603385-17d352d74a38"
+]
+
+def random_interview_image():
+    return random.choice([channel[2] for channel in YOUTUBE_CHANNELS])
+
+def random_market_image():
+    return random.choice(MARKET_IMAGES)
+
+def random_commodity_image():
+    return random.choice(COMMODITY_IMAGES)
+
+def random_sport_image():
+    return random.choice(SPORT_IMAGES)
+
 def fetch_feed_links(urls, max_items=4):
     headlines = []
     for url in urls:
@@ -50,11 +79,10 @@ def fetch_feed_links(urls, max_items=4):
             feed = feedparser.parse(url)
             for entry in feed.entries[:max_items]:
                 headlines.append(f'<li><a href="{entry.link}" target="_blank">{entry.title}</a></li>')
-        except Exception:
+        except Exception as e:
+            print(f"Error fetching feed {url}: {e}")
             continue
     return headlines
-def random_sport_image():
-    return random.choice(SPORT_IMAGES)
 
 def format_training_program_from_ics(file_path):
     try:
@@ -69,9 +97,11 @@ def format_training_program_from_ics(file_path):
                 local_date = e.begin.astimezone(pytz.timezone("Europe/Athens"))
                 weekday = local_date.strftime('%A').replace("Monday", "Δευτέρα").replace("Tuesday", "Τρίτη").replace("Wednesday", "Τετάρτη").replace("Thursday", "Πέμπτη").replace("Friday", "Παρασκευή").replace("Saturday", "Σάββατο").replace("Sunday", "Κυριακή")
                 date_str = local_date.strftime("%d %B").replace("May", "Μαΐου")
-                event_html += f'<li><strong>{weekday} {date_str}</strong>: {e.name} - <em>{e.description}</em></li>'
+                event_html += f'<li><strong>{weekday} {date_str}</strong>: {e.name} - <em>{e.description or "Χωρίς περιγραφή"}</em></li>'
         event_html += '</ul></section>'
         return event_html
+    except FileNotFoundError:
+        return "<p>Σφάλμα: Το αρχείο ημερολογίου δεν βρέθηκε.</p>"
     except Exception as e:
         return f"<p>Σφάλμα κατά την ανάγνωση του ημερολογίου: {e}</p>"
 
@@ -105,15 +135,13 @@ def build_html():
     </header>
     <main class="py-10 px-6 max-w-6xl mx-auto">
 """
-    return html
-    html = build_html()
 
     # Συνεντεύξεις
     html += '<section class="py-6"><h2 class="text-xl font-semibold mb-4">📺 Συνεντεύξεις</h2><div class="grid grid-cols-1 md:grid-cols-3 gap-4">'
-    for name, link in YOUTUBE_LINKS.items():
+    for name, link, img in YOUTUBE_CHANNELS:
         html += f"""
         <div class="bg-white shadow rounded p-4">
-            <img src="{random_interview_image()}" alt="{name}" class="w-full h-40 object-cover rounded mb-2">
+            <img src="{img}" alt="{name}" class="w-full h-40 object-cover rounded mb-2">
             <p class="font-semibold">{name}</p>
             <a href="{link}" class="text-blue-600 hover:underline text-sm">Δείτε το κανάλι</a>
         </div>
@@ -122,8 +150,14 @@ def build_html():
 
     # Geopolitics
     html += '<section class="py-6"><h2 class="text-xl font-semibold mb-2">🌐 Geopolitics & International Relations</h2><ul class="list-disc list-inside">'
-    for src in GEOPOLITICAL_SOURCES:
-        html += f'<li><a href="{src}" class="text-blue-600 hover:underline">{src.split("//")[1].split("/")[0]}</a></li>'
+    for name, link in STATIC_GEOPOLITICS_LINKS:
+        html += f'<li><a href="{link}" class="text-blue-600 hover:underline">{name}</a></li>'
+    html += '</ul>'
+    
+    # RSS Headlines
+    headlines = fetch_feed_links(GEOPOLITICS_FEEDS)
+    html += '<h3 class="text-lg font-semibold mt-4 mb-2">Πρόσφατα Νέα</h3><ul class="list-disc list-inside">'
+    html += ''.join(headlines) if headlines else '<li>Δεν βρέθηκαν πρόσφατα νέα.</li>'
     html += '</ul></section>'
 
     # Markets
@@ -149,7 +183,7 @@ def build_html():
     </section>"""
 
     # Πρόγραμμα προπονήσεων
-    html += format_training_program_from_ics("full_training_plan_may2025.ics")
+    html += format_training_program_from_ics(os.path.join(NEWS_DIR, "full_training_plan_may2025.ics"))
 
     # Κλείσιμο
     html += """
@@ -159,10 +193,13 @@ def build_html():
     </footer>
 </body>
 </html>"""
+    return html
 
-    # Αποθήκευση
-    with open("index.html", "w", encoding="utf-8") as f:
+def generate_report():
+    html = build_html()
+    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         f.write(html)
+    print(f"Report generated successfully at {OUTPUT_FILE}")
 
 if __name__ == "__main__":
     generate_report()
